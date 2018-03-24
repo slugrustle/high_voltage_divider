@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html>
+<!--
+High Voltage Divider Calculator v1.0 - Finds voltage dividers with two upper
+resistors nearest a target ratio using real-world resistor values.
+
+Written in 2018 by Ben Tesch
+Distributed at https://github.com/slugrustle/high_voltage_divider
+
+To the extent possible under law, the author has dedicated all copyright
+and related and neighboring rights to this software to the public domain
+worldwide. This software is distributed without any warranty.
+The text of the CC0 Public Domain Dedication should be reproduced below.
+If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+Creative Commons Legal Code
+
+CC0 1.0 Universal
+
+    CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+    LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+    ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+    INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+    REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+    PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+    THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+    HEREUNDER.
+
+Statement of Purpose
+
+The laws of most jurisdictions throughout the world automatically confer
+exclusive Copyright and Related Rights (defined below) upon the creator
+and subsequent owner(s) (each and all, an "owner") of an original work of
+authorship and/or a database (each, a "Work").
+
+Certain owners wish to permanently relinquish those rights to a Work for
+the purpose of contributing to a commons of creative, cultural and
+scientific works ("Commons") that the public can reliably and without fear
+of later claims of infringement build upon, modify, incorporate in other
+works, reuse and redistribute as freely as possible in any form whatsoever
+and for any purposes, including without limitation commercial purposes.
+These owners may contribute to the Commons to promote the ideal of a free
+culture and the further production of creative, cultural and scientific
+works, or to gain reputation or greater distribution for their Work in
+part through the use and efforts of others.
+
+For these and/or other purposes and motivations, and without any
+expectation of additional consideration or compensation, the person
+associating CC0 with a Work (the "Affirmer"), to the extent that he or she
+is an owner of Copyright and Related Rights in the Work, voluntarily
+elects to apply CC0 to the Work and publicly distribute the Work under its
+terms, with knowledge of his or her Copyright and Related Rights in the
+Work and the meaning and intended legal effect of CC0 on those rights.
+
+1. Copyright and Related Rights. A Work made available under CC0 may be
+protected by copyright and related or neighboring rights ("Copyright and
+Related Rights"). Copyright and Related Rights include, but are not
+limited to, the following:
+
+  i. the right to reproduce, adapt, distribute, perform, display,
+     communicate, and translate a Work;
+ ii. moral rights retained by the original author(s) and/or performer(s);
+iii. publicity and privacy rights pertaining to a person's image or
+     likeness depicted in a Work;
+ iv. rights protecting against unfair competition in regards to a Work,
+     subject to the limitations in paragraph 4(a), below;
+  v. rights protecting the extraction, dissemination, use and reuse of data
+     in a Work;
+ vi. database rights (such as those arising under Directive 96/9/EC of the
+     European Parliament and of the Council of 11 March 1996 on the legal
+     protection of databases, and under any national implementation
+     thereof, including any amended or successor version of such
+     directive); and
+vii. other similar, equivalent or corresponding rights throughout the
+     world based on applicable law or treaty, and any national
+     implementations thereof.
+
+2. Waiver. To the greatest extent permitted by, but not in contravention
+of, applicable law, Affirmer hereby overtly, fully, permanently,
+irrevocably and unconditionally waives, abandons, and surrenders all of
+Affirmer's Copyright and Related Rights and associated claims and causes
+of action, whether now known or unknown (including existing as well as
+future claims and causes of action), in the Work (i) in all territories
+worldwide, (ii) for the maximum duration provided by applicable law or
+treaty (including future time extensions), (iii) in any current or future
+medium and for any number of copies, and (iv) for any purpose whatsoever,
+including without limitation commercial, advertising or promotional
+purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each
+member of the public at large and to the detriment of Affirmer's heirs and
+successors, fully intending that such Waiver shall not be subject to
+revocation, rescission, cancellation, termination, or any other legal or
+equitable action to disrupt the quiet enjoyment of the Work by the public
+as contemplated by Affirmer's express Statement of Purpose.
+
+3. Public License Fallback. Should any part of the Waiver for any reason
+be judged legally invalid or ineffective under applicable law, then the
+Waiver shall be preserved to the maximum extent permitted taking into
+account Affirmer's express Statement of Purpose. In addition, to the
+extent the Waiver is so judged Affirmer hereby grants to each affected
+person a royalty-free, non transferable, non sublicensable, non exclusive,
+irrevocable and unconditional license to exercise Affirmer's Copyright and
+Related Rights in the Work (i) in all territories worldwide, (ii) for the
+maximum duration provided by applicable law or treaty (including future
+time extensions), (iii) in any current or future medium and for any number
+of copies, and (iv) for any purpose whatsoever, including without
+limitation commercial, advertising or promotional purposes (the
+"License"). The License shall be deemed effective as of the date CC0 was
+applied by Affirmer to the Work. Should any part of the License for any
+reason be judged legally invalid or ineffective under applicable law, such
+partial invalidity or ineffectiveness shall not invalidate the remainder
+of the License, and in such case Affirmer hereby affirms that he or she
+will not (i) exercise any of his or her remaining Copyright and Related
+Rights in the Work or (ii) assert any associated claims and causes of
+action with respect to the Work, in either case contrary to Affirmer's
+express Statement of Purpose.
+
+4. Limitations and Disclaimers.
+
+ a. No trademark or patent rights held by Affirmer are waived, abandoned,
+    surrendered, licensed or otherwise affected by this document.
+ b. Affirmer offers the Work as-is and makes no representations or
+    warranties of any kind concerning the Work, express, implied,
+    statutory or otherwise, including without limitation warranties of
+    title, merchantability, fitness for a particular purpose, non
+    infringement, or the absence of latent or other defects, accuracy, or
+    the present or absence of errors, whether or not discoverable, all to
+    the greatest extent permissible under applicable law.
+ c. Affirmer disclaims responsibility for clearing rights of other persons
+    that may apply to the Work or any use thereof, including without
+    limitation any person's Copyright and Related Rights in the Work.
+    Further, Affirmer disclaims responsibility for obtaining any necessary
+    consents, permissions or other rights required for any use of the
+    Work.
+ d. Affirmer understands and acknowledges that Creative Commons is not a
+    party to this document and has no duty or obligation with respect to
+    this CC0 or use of the Work.
+-->
+<head>
+<style>
+#inputTable {
+  border: 1px solid black;
+}
+
+#inputTable th, #inputTable td {
+  border: none;
+  padding: 6pt;
+}
+
+td.labelCol {
+  text-align: right;
+}
+
+#inputTable, #explainerDiv, #resultsTable {
+  width: 100%;
+}
+
+#resultsTable {
+  margin-bottom: 30pt;
+}
+
+#resultsTable, #resultsTable th, #resultsTable td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+#resultsTable th, #resultsTable td {
+  padding-top: 4pt;
+  padding-bottom: 4pt;
+  padding-left: 6pt;
+  padding-right: 6pt;
+  vertical-align: baseline;
+}
+
+tr.normalRow td {
+  background-color:#ffffff;
+}
+
+tr.shadedRow td {
+  background-color:#e8e8e8;
+}
+
+tr.grayRow td {
+  height: 4pt;
+  background-color: #888888;
+}
+
+td.diffCol {
+  padding-left: 10pt;
+}
+
+td.groupCol {
+  text-align: center;
+}
+
+td.paramLabel {
+  text-align: right;
+  width: 50%;
+}
+
+</style>
+</head>
+
+<body>
+<h3>High Voltage Divider Calculator&#x2001;v1.0&#x2001;2018-03-24</h3>
+<div style="display: inline-block;">
+  <table id="inputTable">
+    <tr>
+      <td class="labelCol">Target Divider Ratio</td>
+      <td><input id="dividerRatio"/></td>
+      <td>Min <input type="radio" name="ratioType" id="ratioTypeMin"/>
+          Nom <input type="radio" name="ratioType" id="ratioTypeNom" checked/>
+          Max <input type="radio" name="ratioType" id="ratioTypeMax"/></td>
+    </tr>
+    <tr>
+      <td class="labelCol">Resistor Tolerance (%)</td>
+      <td><input id="resTolerance" value="0"/></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="labelCol">Min Upper1,2 Resistance (&#x03A9;)</td>
+      <td><input id="minUpperResistance" value="0"/></td>
+      <td>Resistance value examples:</td>
+    </tr>
+    <tr>
+      <td class="labelCol">Min String Resistance (&#x03A9;)</td>
+      <td><input id="minStringResistance" value="0"/></td>
+      <td>0,&#x2000;10,&#x2000;2.4k,&#x2000;5.6e4,&#x2000;3.1M</td>
+    </tr>
+    <tr>
+      <td class="labelCol">Max String Resistance (&#x03A9;)</td>
+      <td><input id="maxStringResistance" value="20M"/></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="labelCol">Resistor Value Series</td>
+      <td>
+          E24 <input type="radio" name="valType" id="valTypeE24" value="min"/>
+          E96 <input type="radio" name="valType" id="valTypeE96" value="nom"/>
+          Both <input type="radio" name="valType" id="valTypeE24E96" checked/>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align: center;"><button onclick="solveDivider();">Solve</button></td>
+    </tr>
+  </table>
+
+  <h3>Equations</h3>
+  <div id="explainerDiv" style="border: 1px solid black; display: inline-block;">
+    <div style="float: left; margin-right: 8pt;">
+      <!-- Begin High Voltage Divider SVG Image -->
+      <?xml version="1.0" encoding="UTF-8"?>
+      <svg width="170.89pt" height="254.92pt" version="1.1" viewBox="0 0 341.78535 509.84126" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" role="img" aria-label="Voltage Divider Circuit Diagram">
+      <title>High Voltage Divider Circuit Diagram</title>
+      <desc>Three resistor voltage divider. Upper two series resistors connect to input and output; lower resistor connects to output and ground.</desc>
+      <g transform="translate(-154.43 -83.466)">
+      <g transform="translate(59.372 125.46)">
+      <path d="m280 157.36v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25" fill="none" stroke="#000" stroke-width="1px"/>
+      <path d="m280 285.35v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25" fill="none" stroke="#000" stroke-width="1px"/>
+      <circle cx="185.09" cy="23.362" r="5" fill="none" stroke="#000" stroke-width="1px"/>
+      <path d="m280 267.36v18" fill="none" stroke="#000" stroke-width="1px"/>
+      <text x="112.10548" y="222.3307" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="112.10548" y="222.3307" font-size="37.333px">Upper2</tspan></text>
+      <text x="133.39714" y="353.69226" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="133.39714" y="353.69226" font-size="37.333px">Lower</tspan></text>
+      <g transform="translate(200 254.98)" fill="none" stroke="#000" stroke-width="1px"><path d="m80 157.36v15h20-40"/><path d="m68 182.36h24"/><path d="m76 192.36h8"/></g>
+      <path d="m280 395.35v17" fill="none" stroke="#000" stroke-width="1px"/>
+      <path d="m280 276.1h74.875" fill="none" stroke="#000" stroke-width=".8653px"/>
+      <circle cx="360.11" cy="276.1" r="5" fill="none" stroke="#000" stroke-width="1px"/>
+      <circle cx="280" cy="276.39" r="2" stroke="#000"/>
+      <text x="165.63867" y="6.3668594" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="165.63867" y="6.3668594" font-size="37.333px">Vi</tspan></text>
+      <text x="373.44031" y="289.44717" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="373.44031" y="289.44717" font-size="37.333px">Vo</tspan></text>
+      <path d="m280 46.094v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25" fill="none" stroke="#000" stroke-width="1px"/>
+      <path d="m279.99 155.51v2.0978" fill="none" stroke="#000"/>
+      <text x="111.8138" y="110.81879" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="111.8138" y="110.81879" font-size="37.333px">Upper1</tspan></text>
+      <path d="m280 46.426v-23.063h-89.842" fill="none" stroke="#000"/></g></g></svg>
+      <!-- End High Voltage Divider SVG Image -->
+    </div>
+    <div style="display: inline-block;">
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-top: 10pt; margin-bottom: 14pt;">
+        <b>String Resistance</b>&#x2000;=&#x2000;Lower + Upper1 + Upper2
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 14pt;">
+        <b>Divider Ratio</b>&#x2000;=&#x2000;Vo <b>/</b> Vi
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 4pt;">
+        <b>Min Ratio</b>&#x2000;=&#x2000;LowerDim <b>/</b> (LowerDim + UpperAug)
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 4pt;">
+        <i>LowerDim</i>&#x2000;=&#x2000;(1 &#x2212; Tolerance<b>/</b>100) &#x2022; Lower
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 14pt;">
+        <i>UpperAug</i>&#x2000;=&#x2000;(1 + Tolerance<b>/</b>100) &#x2022; (Upper1 + Upper2)
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 14pt;">
+        <b>Nom Ratio</b>&#x2000;=&#x2000;Lower <b>/</b> (Lower + Upper1 + Upper2)
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 4pt;">
+        <b>Max Ratio</b>&#x2000;=&#x2000;LowerAug <b>/</b> (LowerAug + UpperDim)
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt; margin-bottom: 4pt;">
+        <i>LowerAug</i>&#x2000;=&#x2000;(1 + Tolerance<b>/</b>100) &#x2022; Lower
+      </div>
+      <div style="padding-left: 4pt; padding-right: 6pt;">
+        <i>UpperDim</i>&#x2000;=&#x2000;(1 &#x2212; Tolerance<b>/</b>100) &#x2022; (Upper1 + Upper2)<br/>
+      </div>
+    </div>
+  </div>
+
+  <h3>Results</h3>
+  <table id="resultsTable">
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+
+  <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#" style="max-width: 30em;">
+    <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/" style="text-decoration: none">
+      <!-- Begin CC0 Button SVG Image -->
+      <svg width="88px" height="31px" enable-background="new -0.5 -0.101 88 31" version="1.1" viewBox="-0.5 -0.101 88 31" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CC0 Button">
+      <title>CC0</title>
+      <desc>Creative Commons CC0 1.0 Universal Button Image</desc>
+      <path d="m1.803 0.482l83.127 0.149c1.161 0 2.198-0.173 2.198 2.333l-0.103 27.556h-87.32v-27.658c0-1.236 0.118-2.38 2.098-2.38z" fill="#fff"/>
+      <ellipse cx="13.887" cy="15.502" rx="11.101" ry="11.174" fill="#fff"/>
+      <path d="M23.271,4.061c3.484,2.592,5.754,6.744,5.755,11.44c-0.001,4.272-1.88,8.095-4.842,10.705h62.853V4.061H23.271z"/>
+      <g fill="#fff">
+      <path d="m35.739 7.559c0.392 0 0.728 0.059 1.002 0.173 0.276 0.116 0.5 0.268 0.674 0.456 0.173 0.189 0.299 0.405 0.379 0.647 0.079 0.242 0.118 0.494 0.118 0.753 0 0.253-0.039 0.503-0.118 0.749-0.08 0.244-0.206 0.462-0.379 0.65-0.174 0.189-0.397 0.341-0.674 0.456-0.274 0.114-0.61 0.173-1.002 0.173h-1.452v2.267h-1.382v-6.324h2.834zm-0.379 2.976c0.158 0 0.312-0.012 0.457-0.035 0.147-0.023 0.276-0.069 0.388-0.137s0.201-0.164 0.269-0.288 0.101-0.287 0.101-0.487-0.033-0.362-0.101-0.487c-0.067-0.124-0.157-0.221-0.269-0.287-0.111-0.068-0.24-0.114-0.388-0.138-0.146-0.024-0.299-0.036-0.457-0.036h-1.073v1.896l1.073-1e-3z"/>
+      <path d="m43.751 13.4c-0.476 0.417-1.133 0.625-1.972 0.625-0.851 0-1.509-0.207-1.976-0.62-0.466-0.412-0.699-1.052-0.699-1.913v-3.933h1.381v3.934c0 0.171 0.016 0.338 0.045 0.505 0.029 0.165 0.091 0.311 0.185 0.439 0.094 0.126 0.225 0.229 0.392 0.309 0.167 0.081 0.392 0.12 0.673 0.12 0.493 0 0.833-0.11 1.021-0.332s0.282-0.568 0.282-1.04v-3.935h1.382v3.934c-1e-3 0.855-0.238 1.49-0.714 1.907z"/>
+      <path d="m49.07 7.559c0.3 0 0.572 0.027 0.818 0.081 0.244 0.054 0.457 0.14 0.633 0.261 0.177 0.121 0.312 0.282 0.41 0.482 0.096 0.201 0.146 0.45 0.146 0.745 0 0.318-0.072 0.584-0.216 0.796-0.146 0.212-0.357 0.388-0.639 0.523 0.387 0.112 0.676 0.31 0.865 0.589 0.189 0.281 0.286 0.62 0.286 1.015 0 0.319-0.062 0.595-0.187 0.828-0.123 0.232-0.289 0.423-0.496 0.571-0.209 0.148-0.445 0.257-0.713 0.327-0.269 0.07-0.541 0.105-0.822 0.105h-3.047v-6.323h2.962zm-0.175 2.56c0.246 0 0.448-0.059 0.607-0.178 0.158-0.118 0.236-0.309 0.236-0.576 0-0.147-0.025-0.269-0.078-0.363-0.053-0.093-0.123-0.168-0.211-0.221-0.09-0.053-0.189-0.091-0.305-0.109-0.115-0.022-0.232-0.032-0.355-0.032h-1.294v1.48l1.4-1e-3zm0.08 2.685c0.135 0 0.264-0.014 0.387-0.04s0.23-0.072 0.326-0.133c0.092-0.062 0.168-0.147 0.226-0.254 0.056-0.104 0.083-0.241 0.083-0.406 0-0.324-0.092-0.557-0.271-0.695-0.182-0.138-0.424-0.208-0.723-0.208h-1.505v1.738h1.479v-2e-3h-2e-3z"/>
+      <path d="M54.143,7.559v5.156h3.062v1.168H52.76V7.559H54.143z"/>
+      <path d="m59.748 7.559v6.324h-1.382v-6.324h1.382z"/>
+      <path d="m65.451 9.247c-0.082-0.132-0.186-0.249-0.309-0.349-0.123-0.102-0.263-0.18-0.418-0.236-0.156-0.057-0.316-0.084-0.488-0.084-0.312 0-0.574 0.062-0.793 0.183-0.217 0.12-0.394 0.283-0.525 0.486-0.136 0.204-0.232 0.436-0.296 0.695-0.062 0.259-0.093 0.528-0.093 0.806 0 0.267 0.031 0.524 0.093 0.776 0.062 0.251 0.16 0.477 0.296 0.678 0.134 0.201 0.312 0.361 0.525 0.483 0.219 0.12 0.481 0.181 0.793 0.181 0.424 0 0.752-0.13 0.99-0.389 0.236-0.26 0.383-0.602 0.437-1.028h1.337c-0.034 0.396-0.126 0.753-0.271 1.072-0.146 0.318-0.342 0.591-0.582 0.815-0.238 0.225-0.521 0.396-0.845 0.513-0.323 0.119-0.678 0.178-1.065 0.178-0.479 0-0.914-0.084-1.297-0.252-0.385-0.169-0.709-0.398-0.973-0.695-0.265-0.295-0.468-0.642-0.607-1.04-0.142-0.399-0.211-0.829-0.211-1.289 0-0.473 0.069-0.911 0.211-1.316 0.141-0.404 0.344-0.758 0.607-1.059 0.264-0.302 0.588-0.536 0.973-0.708 0.384-0.172 0.815-0.258 1.297-0.258 0.348 0 0.676 0.051 0.981 0.15 0.308 0.102 0.583 0.248 0.827 0.44 0.243 0.191 0.443 0.43 0.604 0.712 0.158 0.283 0.259 0.608 0.301 0.975h-1.34c-0.024-0.163-0.077-0.31-0.159-0.44z"/>
+      <path d="m35.615 16.418c0.405 0 0.782 0.062 1.131 0.192 0.35 0.13 0.651 0.324 0.906 0.585 0.255 0.26 0.455 0.586 0.599 0.975 0.144 0.391 0.216 0.849 0.216 1.371 0 0.463-0.059 0.888-0.176 1.277-0.118 0.391-0.295 0.727-0.532 1.012-0.238 0.281-0.534 0.504-0.89 0.668-0.354 0.16-0.772 0.242-1.254 0.242h-2.71v-6.322h2.71zm-0.096 5.154c0.199 0 0.393-0.031 0.581-0.098 0.188-0.062 0.354-0.173 0.502-0.323 0.146-0.151 0.264-0.347 0.352-0.59 0.088-0.241 0.132-0.536 0.132-0.886 0-0.317-0.031-0.606-0.093-0.863-0.062-0.256-0.162-0.479-0.304-0.659-0.141-0.183-0.326-0.323-0.559-0.421-0.231-0.098-0.517-0.146-0.858-0.146h-0.984v3.986h1.231z"/>
+      <path d="m39.8 18.289c0.141-0.403 0.344-0.756 0.606-1.059 0.265-0.303 0.589-0.538 0.973-0.709 0.385-0.171 0.816-0.257 1.298-0.257 0.487 0 0.921 0.086 1.303 0.257 0.381 0.171 0.704 0.406 0.969 0.709 0.264 0.303 0.466 0.652 0.605 1.059 0.143 0.404 0.213 0.845 0.213 1.316 0 0.46-0.07 0.891-0.213 1.288-0.142 0.397-0.344 0.744-0.605 1.04-0.266 0.295-0.588 0.525-0.969 0.695-0.382 0.166-0.815 0.252-1.303 0.252-0.481 0-0.913-0.086-1.298-0.252-0.384-0.17-0.708-0.4-0.973-0.695-0.263-0.296-0.466-0.645-0.606-1.04-0.14-0.397-0.211-0.828-0.211-1.288 0-0.471 0.07-0.911 0.211-1.316zm1.262 2.09c0.062 0.252 0.16 0.479 0.295 0.68 0.135 0.2 0.312 0.359 0.527 0.482 0.218 0.121 0.481 0.183 0.792 0.183 0.312 0 0.576-0.062 0.792-0.183 0.218-0.121 0.394-0.281 0.529-0.482 0.134-0.2 0.231-0.428 0.295-0.68 0.062-0.25 0.092-0.508 0.092-0.774 0-0.276-0.03-0.547-0.092-0.806-0.062-0.262-0.161-0.492-0.295-0.696-0.136-0.201-0.312-0.365-0.529-0.485-0.216-0.121-0.48-0.184-0.792-0.184-0.311 0-0.574 0.062-0.792 0.184-0.216 0.12-0.393 0.284-0.527 0.485-0.135 0.204-0.233 0.437-0.295 0.696s-0.093 0.527-0.093 0.806c1e-3 0.266 0.032 0.524 0.093 0.774z"/>
+      <path d="m49.092 16.418l1.471 4.348h0.02l1.393-4.348h1.942v6.322h-1.294v-4.48h-0.02l-1.539 4.48h-1.065l-1.54-4.437h-0.019v4.437h-1.293v-6.322h1.944z"/>
+      <path d="m58.764 16.418l2.35 6.322h-1.434l-0.476-1.408h-2.351l-0.492 1.408h-1.391l2.377-6.322h1.417zm0.08 3.879l-0.793-2.322h-0.018l-0.817 2.322h1.628z"/>
+      <path d="m63.547 16.418v6.322h-1.382v-6.322h1.382z"/>
+      <path d="m66.604 16.418l2.623 4.242h0.018v-4.242h1.294v6.322h-1.384l-2.611-4.234h-0.02v4.234h-1.294v-6.322h1.374z"/>
+      </g>
+      <path d="m85.852 0h-84.705c-0.908 0-1.647 0.744-1.647 1.658v28.969c0 0.207 0.167 0.373 0.372 0.373h87.256c0.205 0 0.372-0.166 0.372-0.373v-28.969c0-0.914-0.738-1.658-1.648-1.658zm-84.705 0.75h84.705c0.498 0 0.902 0.406 0.902 0.908v28.557h-86.509v-8.426-20.131c0-0.501 0.405-0.908 0.902-0.908z"/>
+      <ellipse cx="14.156" cy="15.661" rx="11.004" ry="11.076" fill="#fff"/>
+      <path d="m14.22 8.746c-3.862 0-4.834 3.669-4.834 6.779 0 3.111 0.971 6.779 4.834 6.779s4.834-3.67 4.834-6.779c0-3.111-0.971-6.779-4.834-6.779zm0 2.555c0.157 0 0.3 0.024 0.435 0.06 0.278 0.24 0.414 0.573 0.147 1.038l-2.572 4.76c-0.079-0.603-0.091-1.195-0.091-1.634 0-1.37 0.094-4.224 2.081-4.224zm1.926 2.193c0.137 0.731 0.155 1.493 0.155 2.03 0 1.37-0.094 4.223-2.08 4.223-0.156 0-0.301-0.017-0.435-0.049-0.025-0.01-0.049-0.019-0.074-0.025-0.04-0.012-0.084-0.024-0.122-0.041-0.442-0.188-0.721-0.531-0.319-1.139l2.875-4.999z"/>
+      <path d="m14.195 3.748c-3.245 0-5.98 1.137-8.21 3.422-1.128 1.135-1.99 2.431-2.589 3.876-0.585 1.43-0.876 2.921-0.876 4.478 0 1.57 0.291 3.062 0.876 4.479s1.434 2.69 2.548 3.826c1.128 1.121 2.395 1.985 3.802 2.588 1.421 0.59 2.903 0.884 4.449 0.884 1.547 0 3.05-0.304 4.499-0.907 1.448-0.604 2.74-1.471 3.883-2.605 1.101-1.078 1.934-2.317 2.49-3.719 0.571-1.415 0.853-2.932 0.853-4.544 0-1.598-0.281-3.112-0.852-4.528-0.571-1.429-1.407-2.693-2.507-3.801-2.298-2.302-5.092-3.449-8.366-3.449zm0.049 2.119c2.646 0 4.904 0.944 6.784 2.836 0.906 0.912 1.6 1.954 2.073 3.119 0.473 1.164 0.713 2.398 0.713 3.703 0 2.707-0.92 4.952-2.744 6.746-0.948 0.927-2.012 1.638-3.196 2.128-1.17 0.489-2.375 0.732-3.63 0.732-1.268 0-2.481-0.239-3.638-0.717-1.156-0.489-2.193-1.191-3.113-2.104-0.92-0.925-1.629-1.97-2.13-3.135-0.487-1.178-0.738-2.391-0.738-3.653 0-1.276 0.251-2.497 0.738-3.662 0.501-1.178 1.211-2.235 2.13-3.175 1.824-1.876 4.077-2.818 6.751-2.818z"/>
+      </svg>
+      <!-- End CC0 Button SVG Image -->
+    </a>
+    <br/>
+    To the extent possible under law,
+    <span resource="[_:publisher]" rel="dct:publisher">
+    <span property="dct:title">Ben Tesch</span></span>
+    has waived all copyright and related or neighboring rights to
+    <span property="dct:title">Voltage Divider Calculator</span>.
+    This work is published from:
+    <span property="vcard:Country" datatype="dct:ISO3166" content="US" about="[_:publisher]">United States</span>.
+  </p>
+</div>
+
+<script type="text/javascript">
+"use strict";
+
+// Returns a new string that is inString without leading/trailing whitespace.
+function trimString(inString) {
+  return inString.replace(/^\s*([^\s]*)\s*$/, '$1');
+}
+
+// Constructor for Candidate objects.
+function Candidate(resUpper1, resUpper2, resLower, minRatio,
+                   nomRatio, maxRatio, diff) {
+  this.resUpper1 = resUpper1;
+  this.resUpper2 = resUpper2;
+  this.resLower = resLower;
+  this.resString = resUpper1 + resUpper2 + resLower;
+  this.minRatio = minRatio;
+  this.nomRatio = nomRatio;
+  this.maxRatio = maxRatio;
+  this.diff = diff;
+  this.absDiff = Math.abs(diff);
+}
+
+// Constructor for UpperPair objects
+function UpperPair(resUpper1, resUpper2) {
+  this.resistance = resUpper1 + resUpper2;
+  this.resUpper1 = resUpper1;
+  this.resUpper2 = resUpper2;
+}
+
+// Creates human-readable resistance value strings from
+// resistance values in Ohms. Values below 1 nono Ohm
+// display as 0Ω.
+function resValToString(resVal, precision) {
+  if (resVal >= 1.0e9) {
+    return ((1.0e-9*resVal).toPrecision(precision) + "G\u03A9");
+  } else if (resVal >= 1.0e6) {
+    return ((1.0e-6*resVal).toPrecision(precision) + "M\u03A9");
+  } else if (resVal >= 1.0e3) {
+    return ((1.0e-3*resVal).toPrecision(precision) + "k\u03A9");
+  } else if (resVal >= 1.0) {
+    return ((resVal).toPrecision(precision) + "\u03A9");
+  } else if (resVal >= 1.0e-3) {
+    return ((1.0e3*resVal).toPrecision(precision) + "m\u03A9");
+  } else if (resVal >= 1.0e-6 && resVal >= 1.0e-9) {
+    return ((1.0e6*resVal).toPrecision(precision) + "\u03BC\u03A9");
+  } else {
+    return "0\u03A9";
+  }
+}
+
+// E24 contains EIA E24 series resistor values in the 1s decade.
+var E24 = [1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2.0,
+           2.2, 2.4, 2.7, 3.0, 3.3, 3.6, 3.9, 4.3,
+           4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1];
+
+// E96 contains EIA E96 series resistor values in the 1s decade.
+var E96 = [1.00, 1.02, 1.05, 1.07, 1.10, 1.13, 1.15,
+           1.18, 1.21, 1.24, 1.27, 1.30, 1.33, 1.37,
+           1.40, 1.43, 1.47, 1.50, 1.54, 1.58, 1.62,
+           1.65, 1.69, 1.74, 1.78, 1.82, 1.87, 1.91,
+           1.96, 2.00, 2.05, 2.10, 2.15, 2.21, 2.26,
+           2.32, 2.37, 2.43, 2.49, 2.55, 2.61, 2.67,
+           2.74, 2.80, 2.87, 2.94, 3.01, 3.09, 3.16,
+           3.24, 3.32, 3.40, 3.48, 3.57, 3.65, 3.74,
+           3.83, 3.92, 4.02, 4.12, 4.22, 4.32, 4.42,
+           4.53, 4.64, 4.75, 4.87, 4.99, 5.11, 5.23,
+           5.36, 5.49, 5.62, 5.76, 5.90, 6.04, 6.19,
+           6.34, 6.49, 6.65, 6.81, 6.98, 7.15, 7.32,
+           7.50, 7.68, 7.87, 8.06, 8.25, 8.45, 8.66,
+           8.87, 9.09, 9.31, 9.53, 9.76];
+
+// E24E96 contains the union of E24 and E96.
+var E24E96 = [1.00, 1.02, 1.05, 1.07, 1.10, 1.13, 1.15,
+              1.18, 1.20, 1.21, 1.24, 1.27, 1.30, 1.33,
+              1.37, 1.40, 1.43, 1.47, 1.50, 1.54, 1.58,
+              1.60, 1.62, 1.65, 1.69, 1.74, 1.78, 1.80,
+              1.82, 1.87, 1.91, 1.96, 2.00, 2.05, 2.10,
+              2.15, 2.20, 2.21, 2.26, 2.32, 2.37, 2.40,
+              2.43, 2.49, 2.55, 2.61, 2.67, 2.70, 2.74,
+              2.80, 2.87, 2.94, 3.00, 3.01, 3.09, 3.16,
+              3.24, 3.30, 3.32, 3.40, 3.48, 3.57, 3.60,
+              3.65, 3.74, 3.83, 3.90, 3.92, 4.02, 4.12,
+              4.22, 4.30, 4.32, 4.42, 4.53, 4.64, 4.70,
+              4.75, 4.87, 4.99, 5.10, 5.11, 5.23, 5.36,
+              5.49, 5.60, 5.62, 5.76, 5.90, 6.04, 6.19,
+              6.20, 6.34, 6.49, 6.65, 6.80, 6.81, 6.98,
+              7.15, 7.32, 7.50, 7.68, 7.87, 8.06, 8.20,
+              8.25, 8.45, 8.66, 8.87, 9.09, 9.10, 9.31,
+              9.53, 9.76];
+
+// Each value in E24, E96, or E24E96 is multiplied by all
+// scalars in multipliers to create the full array of resistance
+// values.
+var multipliers = [1.0, 1.0e1, 1.0e2, 1.0e3, 1.0e4, 1.0e5, 1.0e6];
+
+// resArray stores the full array of individual resistance values.
+var resArray = [];
+
+// resArrayUpper stores all unique combinations of any two resistance values
+// in resArray
+var resArrayUpper = [];
+
+// Returns the index in resArray of the value nearest to resVal.
+function findNearest(resVal) {
+  // Perform a binary search; resArray must be sorted in ascending order.
+  var upperBound = resArray.length-1;
+  var lowerBound = 0;
+  var intvlLen = upperBound-lowerBound+1;
+
+  while (intvlLen > 2) {
+    var midPoint = Math.round(0.5*(upperBound+lowerBound));
+    if (resVal <= resArray[midPoint]) {
+      upperBound = midPoint;
+      intvlLen = upperBound-lowerBound+1;
+    } else {
+      lowerBound = midPoint;
+      intvlLen = upperBound-lowerBound+1;
+    }
+  }
+
+  if (Math.abs(resVal - resArray[lowerBound]) < Math.abs(resVal - resArray[upperBound])) {
+    return lowerBound;
+  } else {
+    return upperBound;
+  }
+}
+
+// Returns the index in resArrayUpper of the value nearest to resVal.
+function findNearestUpper(resVal) {
+  // Perform a binary search; resArrayUpper must be sorted in order of ascending
+  // resistance.
+  var upperBound = resArrayUpper.length-1;
+  var lowerBound = 0;
+  var intvlLen = upperBound-lowerBound+1;
+
+  while (intvlLen > 2) {
+    var midPoint = Math.round(0.5*(upperBound+lowerBound));
+    if (resVal <= resArrayUpper[midPoint].resistance) {
+      upperBound = midPoint;
+      intvlLen = upperBound-lowerBound+1;
+    } else {
+      lowerBound = midPoint;
+      intvlLen = upperBound-lowerBound+1;
+    }
+  }
+
+  if (Math.abs(resVal - resArrayUpper[lowerBound].resistance) <
+      Math.abs(resVal - resArrayUpper[upperBound].resistance)) {
+    return lowerBound;
+  } else {
+    return upperBound;
+  }
+}
+
+// Parses user input, solves for resistance values most closely
+// meeting user's divider specification, and outputs results
+// or error messages.
+function solveDivider() {
+  // Parse & validate desired divider ratio input.
+  var ratioString = trimString(document.getElementById("dividerRatio").value);
+  var targetRatio = Number(ratioString);
+
+  if (ratioString.length == 0 || isNaN(targetRatio) ||
+      targetRatio < 1.0e-9 || targetRatio > (1.0 - 1.0e-9)) {
+    document.getElementById("resultsTable").innerHTML =
+	  "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Divider Ratio must be a number on the range (0.0, 1.0)." +
+	  "</td></tr>";
+    return;
+  }
+
+  // Only keep candidate solutions that are near the target ratio.
+  var ratioThresholdLow = Math.max(1.0e-9, targetRatio-0.01);
+  var ratioThresholdHigh = Math.min(targetRatio+0.01, 1.0 - 1.0e-9);
+
+  // Figure out whether the target ratio is a minimum, maximum, or nominal ratio.
+  var ratioEnum = Object.freeze({MIN:1, NOM:2, MAX:3});
+  var ratioType = ratioEnum.NOM;
+
+  if (document.getElementById("ratioTypeMin").checked) {
+    ratioType = ratioEnum.MIN;
+  } else if (document.getElementById("ratioTypeMax").checked) {
+    ratioType = ratioEnum.MAX;
+  }
+
+  // Parse & validate resistor tolerance input.
+  var tolString = trimString(document.getElementById("resTolerance").value);
+  var resTolerance = Number(tolString);
+
+  if (tolString.length == 0 ||  isNaN(resTolerance) ||
+      resTolerance < 0.0 || resTolerance > (100.0 - 1.0e-7)) {
+    document.getElementById("resultsTable").innerHTML =
+	  "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Resistor tolerance must be a number on the range [0.0, 100.0)." +
+	  "</td></tr>";
+    return;
+  }
+
+  // Use resTolerance to create ratio conversion constants for Min and Max
+  // tolerance cases.
+  var tolAug = 1.0 + resTolerance/100.0;
+  var tolDim = 1.0 - resTolerance/100.0;
+
+  var lowToUpRatioNom = (1.0-targetRatio)/targetRatio;
+  var lowToUpRatioMin = tolDim * lowToUpRatioNom / tolAug;
+  var lowToUpRatioMax = tolAug * lowToUpRatioNom / tolDim;
+  var upToLowRatioNom = targetRatio/(1.0-targetRatio);
+  var upToLowRatioMin = tolAug * upToLowRatioNom / tolDim;
+  var upToLowRatioMax = tolDim * upToLowRatioNom / tolAug;
+
+  // Figure out whether to use E24 values, E96 values, or both.
+  var valEnum = Object.freeze({E24:1, E96:2, E24E96:3});
+  var valType = valEnum.E24E96;
+
+  if (document.getElementById("valTypeE24").checked) {
+    valType = valEnum.E24;
+  } else if (document.getElementById("valTypeE96").checked) {
+    valType = valEnum.E96;
+  }
+
+  // Create array of all valid individual resistance values.
+  resArray = [];
+
+  switch (valType) {
+  case valEnum.E24:
+    for (var jMult = 0; jMult < multipliers.length; jMult++) {
+      for (var jVal = 0; jVal < E24.length; jVal++) {
+        resArray.push(multipliers[jMult]*E24[jVal]);
+      }
+    }
+    break;
+  case valEnum.E96:
+    for (var jMult = 0; jMult < multipliers.length; jMult++) {
+      for (var jVal = 0; jVal < E96.length; jVal++) {
+        resArray.push(multipliers[jMult]*E96[jVal]);
+      }
+    }
+    break;
+  default:
+    for (var jMult = 0; jMult < multipliers.length; jMult++) {
+      for (var jVal = 0; jVal < E24E96.length; jVal++) {
+        resArray.push(multipliers[jMult]*E24E96[jVal]);
+      }
+    }
+    break;
+  }
+
+  // Parse & validate minimum upper resistor resistance input.
+  var minUpperString = trimString(document.getElementById("minUpperResistance").value);
+  var lastChar = '';
+  var minUpperRes;
+
+  if (minUpperString.length > 0) {
+    lastChar = minUpperString.charAt(minUpperString.length-1);
+  }
+
+  if (lastChar == 'k' && minUpperString.length > 1) {
+    minUpperRes = 1.0e3 * Number(minUpperString.substr(0, minUpperString.length-1));
+  } else if (lastChar == 'M' && minUpperString.length > 1) {
+    minUpperRes = 1.0e6 * Number(minUpperString.substr(0, minUpperString.length-1));
+  } else {
+    minUpperRes = Number(minUpperString);
+  }
+
+  if (minUpperString.length == 0 || isNaN(minUpperRes) ||
+      minUpperRes < 0.0) {
+    document.getElementById("resultsTable").innerHTML =
+    "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Min Upper1,2 Resistance must be a nonnegative number.<br/>" +
+    "Only the suffixes k (kilo = 10<sup>3</sup>) and " +
+    "M (mega = 10<sup>6</sup>) are recognized.</td></tr>";
+    return;
+  }
+
+  if (minUpperRes > resArray[resArray.length-1]) {
+    document.getElementById("resultsTable").innerHTML =
+    "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Min Upper1,2 Resistance was set to " + resValToString(minUpperRes, 3) +
+    ",<br/> which will yield no results. The largest resistor value in this " +
+    "program is " + resValToString(resArray[resArray.length-1], 3) + "." +
+    "</td></tr>";
+    return;
+  }
+
+  // Parse & validate minimum divider string resistance input.
+  var minString = trimString(document.getElementById("minStringResistance").value);
+  lastChar = '';
+  var minStringRes;
+
+  if (minString.length > 0) {
+    lastChar = minString.charAt(minString.length-1);
+  }
+
+  if (lastChar == 'k' && minString.length > 1) {
+    minStringRes = 1.0e3 * Number(minString.substr(0, minString.length-1));
+  } else if (lastChar == 'M' && minString.length > 1) {
+    minStringRes = 1.0e6 * Number(minString.substr(0, minString.length-1));
+  } else {
+    minStringRes = Number(minString);
+  }
+
+  if (minString.length == 0 || isNaN(minStringRes) ||
+      minStringRes < 0.0) {
+    document.getElementById("resultsTable").innerHTML =
+	  "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Min String Resistance must be a nonnegative number.<br/>" +
+	  "Only the suffixes k (kilo = 10<sup>3</sup>) and " +
+    "M (mega = 10<sup>6</sup>) are recognized.</td></tr>";
+    return;
+  }
+
+  if (minStringRes > resArray[resArray.length-1]) {
+    document.getElementById("resultsTable").innerHTML =
+    "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Min String Resistance was set to " + resValToString(minStringRes, 3) +
+    ",<br/> which will yield no results. The largest resistor value in this " +
+    "program is " + resValToString(resArray[resArray.length-1], 3) + "." +
+    "</td></tr>";
+    return;
+  }
+
+  // Parse & validate maximum divider string resistance input.
+  var maxString = trimString(document.getElementById("maxStringResistance").value);
+  lastChar = '';
+  var maxStringRes;
+
+  if (maxString.length > 0) {
+    lastChar = maxString.charAt(maxString.length-1);
+  }
+
+  if (lastChar == 'k' && maxString.length > 1) {
+    maxStringRes = 1.0e3 * Number(maxString.substr(0, maxString.length-1));
+  } else if (lastChar == 'M' && maxString.length > 1) {
+    maxStringRes = 1.0e6 * Number(maxString.substr(0, maxString.length-1));
+  } else {
+    maxStringRes = Number(maxString);
+  }
+
+  if (maxString.length == 0 || isNaN(maxStringRes) ||
+      maxStringRes < 0.0) {
+    document.getElementById("resultsTable").innerHTML =
+	  "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Max String Resistance must be a nonnegative number.<br/>" +
+    "Units are Ohms. Only the suffixes k (kilo = 10<sup>3</sup>) and " +
+    "M (mega = 10<sup>6</sup>) are recognized.</td></tr>";
+    return;
+  }
+
+  if (maxStringRes < resArray[0]) {
+    document.getElementById("resultsTable").innerHTML =
+    "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Max String Resistance was set to " + resValToString(maxStringRes, 3) +
+    ",<br/> which will yield no results. The smallest resistor value in this " +
+    "program is " + resValToString(resArray[0], 3) + "." +
+    "</td></tr>";
+    return;
+  }
+
+  if (maxStringRes <= minStringRes) {
+    document.getElementById("resultsTable").innerHTML =
+	  "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Max String Resistance must be larger than Min String Resistance." +
+    "</td></tr>";
+    return;
+  }
+
+  if (maxStringRes <= 0.5 * minUpperRes) {
+    document.getElementById("resultsTable").innerHTML =
+	  "<tr><td><b>Input Error:</b>&#x2000;" +
+    "Max String Resistance must be larger than 2 &#x2022; " +
+    "Min Upper1,2 Resistance.</td></tr>";
+    return;
+  }
+
+
+  // Create array of all unique combinations of two valid resistance values
+  resArrayUpper = [];
+
+  // Only include resistances from resArray with value >= minUpperRes
+  var startIndex = 0;
+  if (minUpperRes > 0) {
+    startIndex = findNearest(minUpperRes);
+    while (resArray[startIndex] < minUpperRes) {
+      startIndex++;
+    }
+  }
+
+  for (var jRes1 = startIndex; jRes1 < resArray.length; jRes1++) {
+    for (var jRes2 = jRes1; jRes2 < resArray.length; jRes2++) {
+      resArrayUpper.push(new UpperPair(resArray[jRes2], resArray[jRes1]));
+    }
+  }
+
+  // Sort resArrayUpper by series resistance value ascending
+  resArrayUpper.sort(function(a,b){return (a.resistance - b.resistance);});
+
+  // Keep only one pair for each unique series resistance value (to within one
+  // part in 1 million); prefer pairs where the two resistors are closer to
+  // each other.
+  var scratchArray = [];
+  for (var jAnchor = 0; jAnchor < resArrayUpper.length; ) {
+    var duplicates = [];
+    var resAnchor = resArrayUpper[jAnchor].resistance;
+    var jTest;
+
+    for (jTest = jAnchor;
+         jTest < resArrayUpper.length &&
+         Math.abs(resArrayUpper[jTest].resistance - resAnchor) < 1.0e-6 * resAnchor;
+         jTest++) {
+      duplicates.push(resArrayUpper[jTest]);
+    }
+
+    jAnchor = jTest;
+
+    if (duplicates.length == 1) {
+      scratchArray.push(duplicates[0]);
+    } else if (duplicates.length > 1) {
+      var minDiff = Math.abs(duplicates[0].resUpper1 - duplicates[0].resUpper2);
+      var minIndx = 0;
+      for (var jDup = 1; jDup < duplicates.length; jDup++) {
+        var testDiff = Math.abs(duplicates[jDup].resUpper1 - duplicates[jDup].resUpper2);
+        if (testDiff < minDiff) {
+          minDiff = testDiff;
+          minIndx = jDup;
+        }
+      }
+      scratchArray.push(duplicates[minIndx]);
+    }
+  }
+  resArrayUpper = scratchArray;
+  scratchArray = [];
+
+  // Each candidate divider solution is stored as a Candidate object
+  // in the candidates array.
+  var candidates = [];
+
+  for (var jRes = 0; jRes < resArray.length; jRes++) {
+    // Test this resVal as a lower resistor.
+    var resLower = resArray[jRes];
+    var optUpper;
+
+    switch (ratioType) {
+    case ratioEnum.MIN:
+      optUpper = lowToUpRatioMin * resLower;
+      break;
+    case ratioEnum.MAX:
+      optUpper = lowToUpRatioMax * resLower;
+      break;
+    default:
+      optUpper = lowToUpRatioNom * resLower;
+      break;
+    }
+
+    if ((resLower+optUpper) >= minStringRes && (resLower+optUpper) <= maxStringRes) {
+      var nearUpperPair = resArrayUpper[findNearestUpper(optUpper)];
+      var minRatio = (tolDim*resLower) / ((tolDim*resLower)+(tolAug*nearUpperPair.resistance));
+      var nomRatio = resLower / (resLower+nearUpperPair.resistance);
+      var maxRatio = (tolAug*resLower) / ((tolAug*resLower)+(tolDim*nearUpperPair.resistance));
+
+      switch (ratioType) {
+      case ratioEnum.MIN:
+        if (minRatio >= ratioThresholdLow && minRatio <= ratioThresholdHigh) {
+          candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, minRatio, nomRatio, maxRatio, minRatio-targetRatio));
+        }
+        break;
+      case ratioEnum.MAX:
+        if (maxRatio >= ratioThresholdLow && maxRatio <= ratioThresholdHigh) {
+          candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, minRatio, nomRatio, maxRatio, maxRatio-targetRatio));
+        }
+        break;
+      default:
+        if (nomRatio >= ratioThresholdLow && nomRatio <= ratioThresholdHigh) {
+          candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, minRatio, nomRatio, maxRatio, nomRatio-targetRatio));
+        }
+        break;
+      }
+    }
+  }
+
+  for (var jRes = 0; jRes < resArrayUpper.length; jRes++) {
+    // Test this UpperPair as an upper resistor pair.
+    var resUpperPair = resArrayUpper[jRes];
+    var optLower;
+
+    switch (ratioType) {
+    case ratioEnum.MIN:
+      optLower = upToLowRatioMin * resUpperPair.resistance;
+      break;
+    case ratioEnum.MAX:
+      optLower = upToLowRatioMax * resUpperPair.resistance;
+      break;
+    default:
+      optLower = upToLowRatioNom * resUpperPair.resistance;
+      break;
+    }
+
+    if ((resUpperPair.resistance+optLower) >= minStringRes &&
+        (resUpperPair.resistance+optLower) <= maxStringRes) {
+      var nearLower = resArray[findNearest(optLower)];
+
+      var minRatio = (tolDim*nearLower) / ((tolDim*nearLower)+(tolAug*resUpperPair.resistance));
+      var nomRatio = nearLower / (nearLower+resUpperPair.resistance);
+      var maxRatio = (tolAug*nearLower) / ((tolAug*nearLower)+(tolDim*resUpperPair.resistance));
+
+      switch (ratioType) {
+      case ratioEnum.MIN:
+        if (minRatio >= ratioThresholdLow && minRatio <= ratioThresholdHigh) {
+          candidates.push(new Candidate(resUpperPair.resUpper1, resUpperPair.resUpper2, nearLower, minRatio, nomRatio, maxRatio, minRatio-targetRatio));
+        }
+        break;
+      case ratioEnum.MAX:
+        if (maxRatio >= ratioThresholdLow && maxRatio <= ratioThresholdHigh) {
+          candidates.push(new Candidate(resUpperPair.resUpper1, resUpperPair.resUpper2, nearLower, minRatio, nomRatio, maxRatio, maxRatio-targetRatio));
+        }
+        break;
+      default:
+        if (nomRatio >= ratioThresholdLow && nomRatio <= ratioThresholdHigh) {
+          candidates.push(new Candidate(resUpperPair.resUpper1, resUpperPair.resUpper2, nearLower, minRatio, nomRatio, maxRatio, nomRatio-targetRatio));
+        }
+        break;
+      }
+    }
+  }
+
+  // Assemble the contents of resultsTable in this string.
+  // Multiple DOM accesses slow down the program.
+  var tableString = "";
+
+  if (candidates.length <= 0) {
+    // Show a message detailing all relevant settings if no results were found.
+    tableString = "<tr><td class=\"groupCol\" colspan=\"2\"><b>No Results Found</b></tr>" +
+                  "<tr><td class=\"paramLabel\">Target ";
+
+    switch (ratioType) {
+    case ratioEnum.MIN:
+      tableString += "minimum";
+      break;
+    case ratioEnum.MAX:
+      tableString += "maximum";
+      break;
+    default:
+      tableString += "nominal";
+      break;
+    }
+
+    tableString += " divider ratio</td><td>" + targetRatio.toPrecision(6) + "</td></tr>" +
+                   "<tr class=\"shadedRow\"><td class=\"paramLabel\">Ratio search range</td><td>[&nbsp;" + ratioThresholdLow.toPrecision(6) + ",&#x2000;" + ratioThresholdHigh.toPrecision(6) + "&nbsp;]</td></tr>" +
+                   "<tr><td class=\"paramLabel\">Resistor tolerance</td><td>&#x00B1;" + resTolerance.toPrecision(4) + "%</td></tr>" +
+                   "<tr class=\"shadedRow\"><td class=\"paramLabel\">Minimum Upper1, Upper2 resistance</td><td>" + resValToString(minUpperRes, 6) + "</td></tr>" +
+                   "<tr><td class=\"paramLabel\">Minimum string resistance</td><td>" + resValToString(minStringRes, 6) + "</td></tr>" +
+                   "<tr class=\"shadedRow\"><td class=\"paramLabel\">Maximum string resistance</td><td>" + resValToString(maxStringRes, 6) + "</td></tr>" +
+                   "<tr><td class=\"groupCol\" colspan=\"2\">EIA ";
+
+    switch (valType) {
+    case valEnum.E24:
+      tableString += "E24";
+      break;
+    case valEnum.E96:
+      tableString += "E96";
+      break;
+    default:
+      tableString += "E24 and E96";
+      break;
+    }
+
+    tableString += " series resistor values</td></tr>";
+  } else {
+    // Display the header of the results table.
+    var lastColHeader;
+
+    switch (ratioType) {
+    case ratioEnum.MIN:
+      lastColHeader = "Min&nbsp;Ratio&nbsp;\u2212&nbsp;Target";
+      break;
+    case ratioEnum.MAX:
+      lastColHeader = "Max&nbsp;Ratio&nbsp;\u2212&nbsp;Target";
+      break;
+    default:
+      lastColHeader = "Nom&nbsp;Ratio&nbsp;\u2212&nbsp;Target";
+      break;
+    }
+
+    tableString = "<tr><th>Group</th><th>Upper1</th><th>Upper2</th><th>Lower</th><th>String</th><th>Min&nbsp;Ratio</th><th>Nom&nbsp;Ratio</th><th>Max&nbsp;Ratio</th><th>" +
+      lastColHeader + "</th></tr>";
+
+    // Sort candidates by closeness to target divider ratio.
+    candidates.sort(function(a,b){return (a.absDiff - b.absDiff);});
+
+    // Group candidates with similar absolute difference from target divider ratio.
+    var shadeRow = false;
+    var groupNumber = 1;
+
+    while (candidates.length > 0 && groupNumber <= 100) {
+      var groupLength = 1;
+      while (groupLength < candidates.length && Math.abs(candidates[groupLength].diff-candidates[0].diff) < 1e-10) {
+        groupLength++;
+      }
+      var candidateGroup = candidates.splice(0, groupLength);
+
+      // Store unique elements of candidateGroup in resultsGroup
+      candidateGroup.sort(function(a,b){return (a.resLower - b.resLower);});
+      var resultsGroup = [];
+
+      while (candidateGroup.length > 0) {
+        // Find subgroup with same resLower value.
+        var subLength = 1;
+        while (subLength < candidateGroup.length && Math.abs(candidateGroup[0].resLower - candidateGroup[subLength].resLower) < 1e-8 * candidateGroup[subLength].resLower) {
+          subLength++;
+        }
+        var subGroup = candidateGroup.splice(0, subLength);
+
+        // Store non-duplicate entries of subGroup in resultsGroup
+        if (subGroup.length == 1) {
+          resultsGroup.push(subGroup[0]);
+        } else if (subGroup.length > 1) {
+          subGroup.sort(function(a,b){return ((a.resUpper1 + a.resUpper2) - (b.resUpper1 + b.resUpper2));});
+          resultsGroup.push(subGroup[0]);
+
+          for (var testIndx = 1; testIndx < subGroup.length; testIndx++) {
+            if (Math.abs(subGroup[testIndx].resUpper1 - subGroup[testIndx-1].resUpper1) > 1e-8 * subGroup[testIndx].resUpper1 ||
+                Math.abs(subGroup[testIndx].resUpper2 - subGroup[testIndx-1].resUpper2) > 1e-8 * subGroup[testIndx].resUpper2) {
+              resultsGroup.push(subGroup[testIndx]);
+            }
+          }
+        }
+      }
+
+      if (groupNumber > 1) {
+        // Put a gray divider row between groups.
+        shadeRow = false;
+        tableString += "<tr class=\"grayRow\"><td colspan=\"9\"/></tr>";
+      }
+
+      // Display the results in this group.
+      for (var jMember = 0; jMember < resultsGroup.length; jMember++) {
+        if (shadeRow) {
+          tableString += "<tr class=\"shadedRow\">";
+          shadeRow = false;
+        } else {
+          tableString += "<tr class=\"normalRow\">";
+          shadeRow = true;
+        }
+
+        tableString += "<td class=\"groupCol\">" + groupNumber +
+        "</td><td>" + resValToString(resultsGroup[jMember].resUpper1, 3) +
+        "</td><td>" + resValToString(resultsGroup[jMember].resUpper2, 3) +
+        "</td><td>" + resValToString(resultsGroup[jMember].resLower, 3) +
+        "</td><td>" + resValToString(resultsGroup[jMember].resString, 6) +
+        "</td><td>" + resultsGroup[jMember].minRatio.toPrecision(6) +
+        "</td><td>" + resultsGroup[jMember].nomRatio.toPrecision(6) +
+        "</td><td>" + resultsGroup[jMember].maxRatio.toPrecision(6) +
+        "</td><td class=\"diffCol\">" + resultsGroup[jMember].diff.toExponential(4) +
+        "</td></tr>";
+      }
+
+      groupNumber++;
+    }
+  }
+
+  document.getElementById("resultsTable").innerHTML = tableString;
+}
+</script>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 # Image Files
 
 Minified forms of high\_voltage\_divider.svg and CC0\_button.svg are
-inlined inside voltage_divider.html. These files are the
+inlined inside high_voltage_divider.html. These files are the
 originals before minification with [svgminify](http://www.svgminify.com/).
 
 high\_voltage\_divider.svg is the work of the author of this program.

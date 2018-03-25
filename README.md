@@ -11,8 +11,8 @@ calculator is a single .html file with inline Javascript.
 
 ## Getting Started
 
-Download a local copy of high_voltage_divider.html
-and run it in any browser that supports modern
+Download Download the [latest release](https://github.com/slugrustle/high_voltage_divider/releases)
+of high_voltage_divider.html and run it in any browser that supports modern
 Javascript and HTML/CSS.
 
 The Javascript function solveDivider() forms
@@ -36,7 +36,7 @@ Ben Tesch - [slugrustle](https://github.com/slugrustle)
 This project is released under Creative Commons
 [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
 1.0 Universal Public Domain Dedication. See LICENSE.txt or
-the first comment in voltage_divider.html.
+the first comment in high_voltage_divider.html.
 
 ## Acknowledgment
 

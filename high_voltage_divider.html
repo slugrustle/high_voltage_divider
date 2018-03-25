@@ -569,25 +569,27 @@ function solveDivider() {
 
   // Create array of all valid individual resistance values.
   resArray = [];
+  var jMult;
+  var jVal;
 
   switch (valType) {
   case valEnum.E24:
-    for (var jMult = 0; jMult < multipliers.length; jMult++) {
-      for (var jVal = 0; jVal < E24.length; jVal++) {
+    for (jMult = 0; jMult < multipliers.length; jMult++) {
+      for (jVal = 0; jVal < E24.length; jVal++) {
         resArray.push(multipliers[jMult]*E24[jVal]);
       }
     }
     break;
   case valEnum.E96:
-    for (var jMult = 0; jMult < multipliers.length; jMult++) {
-      for (var jVal = 0; jVal < E96.length; jVal++) {
+    for (jMult = 0; jMult < multipliers.length; jMult++) {
+      for (jVal = 0; jVal < E96.length; jVal++) {
         resArray.push(multipliers[jMult]*E96[jVal]);
       }
     }
     break;
   default:
-    for (var jMult = 0; jMult < multipliers.length; jMult++) {
-      for (var jVal = 0; jVal < E24E96.length; jVal++) {
+    for (jMult = 0; jMult < multipliers.length; jMult++) {
+      for (jVal = 0; jVal < E24E96.length; jVal++) {
         resArray.push(multipliers[jMult]*E24E96[jVal]);
       }
     }
@@ -747,7 +749,8 @@ function solveDivider() {
   // part in 1 million); prefer pairs where the two resistors are closer to
   // each other.
   var scratchArray = [];
-  for (var jAnchor = 0; jAnchor < resArrayUpper.length; ) {
+  var jAnchor = 0;
+  while (jAnchor < resArrayUpper.length) {
     var duplicates = [];
     var resAnchor = resArrayUpper[jAnchor].resistance;
     var jTest;
@@ -782,8 +785,12 @@ function solveDivider() {
   // Each candidate divider solution is stored as a Candidate object
   // in the candidates array.
   var candidates = [];
+  var jRes;
+  var minRatio;
+  var nomRatio;
+  var maxRatio;
 
-  for (var jRes = 0; jRes < resArray.length; jRes++) {
+  for (jRes = 0; jRes < resArray.length; jRes++) {
     // Test this resVal as a lower resistor.
     var resLower = resArray[jRes];
     var optUpper;
@@ -802,9 +809,9 @@ function solveDivider() {
 
     if ((resLower+optUpper) >= minStringRes && (resLower+optUpper) <= maxStringRes) {
       var nearUpperPair = resArrayUpper[findNearestUpper(optUpper)];
-      var minRatio = (tolDim*resLower) / ((tolDim*resLower)+(tolAug*nearUpperPair.resistance));
-      var nomRatio = resLower / (resLower+nearUpperPair.resistance);
-      var maxRatio = (tolAug*resLower) / ((tolAug*resLower)+(tolDim*nearUpperPair.resistance));
+      minRatio = (tolDim*resLower) / ((tolDim*resLower)+(tolAug*nearUpperPair.resistance));
+      nomRatio = resLower / (resLower+nearUpperPair.resistance);
+      maxRatio = (tolAug*resLower) / ((tolAug*resLower)+(tolDim*nearUpperPair.resistance));
 
       switch (ratioType) {
       case ratioEnum.MIN:
@@ -826,7 +833,7 @@ function solveDivider() {
     }
   }
 
-  for (var jRes = 0; jRes < resArrayUpper.length; jRes++) {
+  for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
     // Test this UpperPair as an upper resistor pair.
     var resUpperPair = resArrayUpper[jRes];
     var optLower;
@@ -847,9 +854,9 @@ function solveDivider() {
         (resUpperPair.resistance+optLower) <= maxStringRes) {
       var nearLower = resArray[findNearest(optLower)];
 
-      var minRatio = (tolDim*nearLower) / ((tolDim*nearLower)+(tolAug*resUpperPair.resistance));
-      var nomRatio = nearLower / (nearLower+resUpperPair.resistance);
-      var maxRatio = (tolAug*nearLower) / ((tolAug*nearLower)+(tolDim*resUpperPair.resistance));
+      minRatio = (tolDim*nearLower) / ((tolDim*nearLower)+(tolAug*resUpperPair.resistance));
+      nomRatio = nearLower / (nearLower+resUpperPair.resistance);
+      maxRatio = (tolAug*nearLower) / ((tolAug*nearLower)+(tolDim*resUpperPair.resistance));
 
       switch (ratioType) {
       case ratioEnum.MIN:

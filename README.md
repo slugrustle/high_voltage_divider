@@ -15,12 +15,6 @@ Download Download the [latest release](https://github.com/slugrustle/high_voltag
 of high_voltage_divider.html and run it in any browser that supports modern
 Javascript and HTML/CSS.
 
-The Javascript function solveDivider() forms
-the core of the program. It contains code to
-parse the user input, to find candidate voltage
-divider solutions, and to deduplicate, sort,
-and display the most relevant solutions.
-
 ## Contributing
 
 I would love to receive bug reports and user

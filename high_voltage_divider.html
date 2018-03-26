@@ -573,13 +573,14 @@ function initialize_resArrayUpper(minUpperRes) {
 // to each other.
 function prune_resArrayUpper(resSeries) {
   var scratchArray = [];
+  var duplicates = [];
   var jAnchor = 0;
+  var jTest;
   
   while (jAnchor < resArrayUpper.length) {
     // Store UpperPairs that are not unique to within 1:1000000 in duplicates.
-    var duplicates = [];
+    duplicates = [];
     var resAnchor = resArrayUpper[jAnchor].resistance;
-    var jTest;
     
     for (jTest = jAnchor;
          jTest < resArrayUpper.length &&
@@ -598,6 +599,7 @@ function prune_resArrayUpper(resSeries) {
       var minDiff = Math.abs(duplicates[0].resUpper1 - duplicates[0].resUpper2);
       var minIndx = 0;
       var jDup;
+      
       for (jDup = 1; jDup < duplicates.length; jDup++) {
         var testDiff = Math.abs(duplicates[jDup].resUpper1 - duplicates[jDup].resUpper2);
         if (testDiff < minDiff) {
@@ -605,6 +607,7 @@ function prune_resArrayUpper(resSeries) {
           minIndx = jDup;
         }
       }
+      
       scratchArray.push(duplicates[minIndx]);
     }
   }

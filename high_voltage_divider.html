@@ -495,6 +495,8 @@ function initialize_resArray(resSeries) {
     }
     break;
   }
+
+  return;
 }
 
 // Returns the index in resArray of the value nearest to resVal.
@@ -533,54 +535,61 @@ function UpperPair(resUpper1, resUpper2) {
 // in resArray as UpperPair objects
 var resArrayUpper = [];
 
-// Create array of all unique combinations of two valid resistance values
+// Create array of all unique combinations of two valid resistance values,
+// where the two values are within a factor of 10 of each other.
 function initialize_resArrayUpper(minUpperRes) {
   resArrayUpper = [];
 
   // Only include resistances from resArray with value >= minUpperRes
   var startIndex = 0;
   if (minUpperRes > 0) {
-    startIndex = findNearest(minUpperRes);
-    while (resArray[startIndex] < minUpperRes) {
+    startIndex = Math.min(resArray.length-1, findNearest(minUpperRes));
+    while (startIndex < resArray.length-1 && resArray[startIndex] < minUpperRes) {
       startIndex++;
     }
   }
 
   var jRes1;
   var jRes2;
+  var limitIndx;
   for (jRes1 = startIndex; jRes1 < resArray.length; jRes1++) {
-    for (jRes2 = jRes1; jRes2 < resArray.length; jRes2++) {
+    limitIndx = Math.max(1, findNearest(resArray[jRes1] * 10.0) - 1);
+    while (limitIndx < resArray.length && resArray[limitIndx-1] < (10.0 * resArray[jRes1])) {
+      limitIndx++;
+    }
+    for (jRes2 = jRes1; jRes2 < limitIndx; jRes2++) {
       resArrayUpper.push(new UpperPair(resArray[jRes2], resArray[jRes1]));
     }
   }
 
   // Sort resArrayUpper by series resistance value ascending
   resArrayUpper.sort(function(a,b){return (a.resistance - b.resistance);});
+  return;
 }
 
-// Keep only one UpperPair object for each series resistance value in
-// resArrayUpper that is unique to within 1 part in 1 million.
-// Prefer UpperParis where resUpper1 and resUpper2 are closer in value to
-// each other.
-function prune_resArrayUpper() {
+// Keep only one UpperPair object for each unique series resistance 
+// value in resArrayUpper.
+// Prefer UpperPairs where resUpper1 and resUpper2 are closer in value
+// to each other.
+function prune_resArrayUpper(resSeries) {
   var scratchArray = [];
   var jAnchor = 0;
-
+  
   while (jAnchor < resArrayUpper.length) {
     // Store UpperPairs that are not unique to within 1:1000000 in duplicates.
     var duplicates = [];
     var resAnchor = resArrayUpper[jAnchor].resistance;
     var jTest;
-
+    
     for (jTest = jAnchor;
          jTest < resArrayUpper.length &&
          Math.abs(resArrayUpper[jTest].resistance - resAnchor) < 1.0e-6 * resAnchor;
          jTest++) {
       duplicates.push(resArrayUpper[jTest]);
     }
-
+    
     jAnchor = jTest;
-
+    
     // Choose which UpperPairs in duplicates to keep, and store them in
     // scratchArray.
     if (duplicates.length === 1) {
@@ -589,7 +598,6 @@ function prune_resArrayUpper() {
       var minDiff = Math.abs(duplicates[0].resUpper1 - duplicates[0].resUpper2);
       var minIndx = 0;
       var jDup;
-
       for (jDup = 1; jDup < duplicates.length; jDup++) {
         var testDiff = Math.abs(duplicates[jDup].resUpper1 - duplicates[jDup].resUpper2);
         if (testDiff < minDiff) {
@@ -600,9 +608,37 @@ function prune_resArrayUpper() {
       scratchArray.push(duplicates[minIndx]);
     }
   }
-
+  
   // Update resArrayUpper.
   resArrayUpper = scratchArray;
+  scratchArray = [];
+  duplicates = [];
+  
+  // Second stage of pruning. Some values that are very close
+  // to each other come through; this removes them.
+  // The cut threshold was determined empirically.
+  var cutThreshold;
+  if (resSeries == seriesEnum.E24) {
+    cutThreshold = 0.002;
+  } else {
+    cutThreshold = 0.0002;
+  }
+
+  for (jTest = 1; jTest < resArrayUpper.length; jTest++) {
+    var metric = (resArrayUpper[jTest].resistance - resArrayUpper[jTest-1].resistance) / resArrayUpper[jTest].resistance;
+    if (metric < cutThreshold) {
+      // Remove this UpperPair or the one prior, whichever has resUpper1 and
+      // resUpper2 with greater difference from each other.
+      if (Math.abs(resArrayUpper[jTest].resUpper1-resArrayUpper[jTest].resUpper2) >
+          Math.abs(resArrayUpper[jTest-1].resUpper1-resArrayUpper[jTest-1].resUpper2)) {
+        resArrayUpper.splice(jTest,1);
+      } else {
+        resArrayUpper.splice(jTest-1,1);    
+      }
+    }
+  }
+  
+  return;
 }
 
 // Returns the index in resArrayUpper of the value nearest to resVal.
@@ -745,6 +781,8 @@ function populate_candidates(settings) {
     }
   }
   
+  resArray = [];
+  resArrayUpper = [];
   return;
 }
 
@@ -857,7 +895,10 @@ function sortAndDisplayResults(settings) {
           }
         }
       }
+      
+      subGroup = [];
     }
+    candidateGroup = [];
 
     if (groupNumber > 1) {
       // Put a gray divider row between groups.
@@ -888,8 +929,10 @@ function sortAndDisplayResults(settings) {
       "</td></tr>";
     }
 
+    resultsGroup = [];
     groupNumber++;
   }
+  candidates = [];
   
   document.getElementById("resultsTable").innerHTML = tableString;
   return;
@@ -995,8 +1038,8 @@ function solveDivider() {
     inputSettings.targetRatio = parserOutput.value;
     // Set a range on acceptable ratios to limit the number of candidate
     // divider solutions.
-    inputSettings.ratioThresholdLow = Math.max(1.0e-9, inputSettings.targetRatio-0.01);
-    inputSettings.ratioThresholdHigh = Math.min(inputSettings.targetRatio+0.01, 1.0 - 1.0e-9);
+    inputSettings.ratioThresholdLow = Math.max(1.0e-9, inputSettings.targetRatio-0.005);
+    inputSettings.ratioThresholdHigh = Math.min(inputSettings.targetRatio+0.005, 1.0 - 1.0e-9);
   } else {
     document.getElementById("resultsTable").innerHTML =
 	  "<tr><td><b>Input Error:</b>&#x2000;" +
@@ -1117,12 +1160,12 @@ function solveDivider() {
 
   // It turns out there are a lot of ways to make the same resistance value
   // from two valid E24 and/or E96 resistors. Only keep the useful ones.
-  prune_resArrayUpper();
+  prune_resArrayUpper(inputSettings.resSeries);
 
   // Store potential voltage divider solutions in the candidates
   // array.
   populate_candidates(inputSettings);
-
+  
   if (candidates.length < 1) {
     // No results were found.
     // Show a message in the results table that details all of

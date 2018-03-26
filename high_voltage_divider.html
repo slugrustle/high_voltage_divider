@@ -181,7 +181,6 @@ tr.shadedRow td {
 }
 
 tr.grayRow td {
-  height: 4pt;
   background-color: #888888;
 }
 
@@ -567,7 +566,7 @@ function initialize_resArrayUpper(minUpperRes) {
   return;
 }
 
-// Keep only one UpperPair object for each unique series resistance 
+// Keep only one UpperPair object for each unique series resistance
 // value in resArrayUpper.
 // Prefer UpperPairs where resUpper1 and resUpper2 are closer in value
 // to each other.
@@ -576,21 +575,21 @@ function prune_resArrayUpper(resSeries) {
   var duplicates = [];
   var jAnchor = 0;
   var jTest;
-  
+
   while (jAnchor < resArrayUpper.length) {
     // Store UpperPairs that are not unique to within 1:1000000 in duplicates.
     duplicates = [];
     var resAnchor = resArrayUpper[jAnchor].resistance;
-    
+
     for (jTest = jAnchor;
          jTest < resArrayUpper.length &&
          Math.abs(resArrayUpper[jTest].resistance - resAnchor) < 1.0e-6 * resAnchor;
          jTest++) {
       duplicates.push(resArrayUpper[jTest]);
     }
-    
+
     jAnchor = jTest;
-    
+
     // Choose which UpperPairs in duplicates to keep, and store them in
     // scratchArray.
     if (duplicates.length === 1) {
@@ -599,7 +598,7 @@ function prune_resArrayUpper(resSeries) {
       var minDiff = Math.abs(duplicates[0].resUpper1 - duplicates[0].resUpper2);
       var minIndx = 0;
       var jDup;
-      
+
       for (jDup = 1; jDup < duplicates.length; jDup++) {
         var testDiff = Math.abs(duplicates[jDup].resUpper1 - duplicates[jDup].resUpper2);
         if (testDiff < minDiff) {
@@ -607,16 +606,16 @@ function prune_resArrayUpper(resSeries) {
           minIndx = jDup;
         }
       }
-      
+
       scratchArray.push(duplicates[minIndx]);
     }
   }
-  
+
   // Update resArrayUpper.
   resArrayUpper = scratchArray;
   scratchArray = [];
   duplicates = [];
-  
+
   // Second stage of pruning. Some values that are very close
   // to each other come through; this removes them.
   // The cut threshold was determined empirically.
@@ -636,11 +635,11 @@ function prune_resArrayUpper(resSeries) {
           Math.abs(resArrayUpper[jTest-1].resUpper1-resArrayUpper[jTest-1].resUpper2)) {
         resArrayUpper.splice(jTest,1);
       } else {
-        resArrayUpper.splice(jTest-1,1);    
+        resArrayUpper.splice(jTest-1,1);
       }
     }
   }
-  
+
   return;
 }
 
@@ -783,7 +782,7 @@ function populate_candidates(settings) {
       }
     }
   }
-  
+
   resArray = [];
   resArrayUpper = [];
   return;
@@ -792,7 +791,7 @@ function populate_candidates(settings) {
 // Diagnostic message that summarizes settings.
 // Displayed when no results are found.
 function displayDiagnostics(settings) {
-  
+
   var ratioString;
   switch (settings.ratioType) {
   case ratioEnum.MIN:
@@ -805,7 +804,7 @@ function displayDiagnostics(settings) {
     ratioString = "nominal";
     break;
   }
-  
+
   var seriesString;
   switch (settings.resSeries) {
   case seriesEnum.E24:
@@ -818,7 +817,7 @@ function displayDiagnostics(settings) {
     seriesString = "E24 and E96";
     break;
   }
-  
+
   var tableString = "<tr><td class=\"groupCol\" colspan=\"2\"><b>No Results Found</b></tr>" +
     "<tr><td class=\"paramLabel\">Target " + ratioString + " divider ratio</td><td>" + settings.targetRatio.toPrecision(6) + "</td></tr>" +
     "<tr class=\"shadedRow\"><td class=\"paramLabel\">Ratio search range</td><td>[&nbsp;" + settings.ratioThresholdLow.toPrecision(6) + ",&#x2000;" + settings.ratioThresholdHigh.toPrecision(6) + "&nbsp;]</td></tr>" +
@@ -827,13 +826,13 @@ function displayDiagnostics(settings) {
     "<tr><td class=\"paramLabel\">Minimum string resistance</td><td>" + resValToString(settings.minStringRes, 6) + "</td></tr>" +
     "<tr class=\"shadedRow\"><td class=\"paramLabel\">Maximum string resistance</td><td>" + resValToString(settings.maxStringRes, 6) + "</td></tr>" +
     "<tr><td class=\"groupCol\" colspan=\"2\">EIA " + seriesString + " series resistor values</td></tr>";
-                 
+
   document.getElementById("resultsTable").innerHTML = tableString;
   return;
 }
 
-// Takes the fully-populated candidates array, sorts by lowest 
-// difference from the target ratio, collects best matches into 
+// Takes the fully-populated candidates array, sorts by lowest
+// difference from the target ratio, collects best matches into
 // groups, and displays them.
 function sortAndDisplayResults(settings) {
 
@@ -898,7 +897,7 @@ function sortAndDisplayResults(settings) {
           }
         }
       }
-      
+
       subGroup = [];
     }
     candidateGroup = [];
@@ -936,7 +935,7 @@ function sortAndDisplayResults(settings) {
     groupNumber++;
   }
   candidates = [];
-  
+
   document.getElementById("resultsTable").innerHTML = tableString;
   return;
 }
@@ -984,16 +983,16 @@ function parseResistance(inString) {
 function parseRatio(inString) {
   var output = new ParsedValue(0.0, false);
   var inTrim = trimString(inString);
-  
+
   output.value = Number(inTrim);
-  if (inTrim.length === 0 || isNaN(output.value) || 
+  if (inTrim.length === 0 || isNaN(output.value) ||
       output.value < 1.0e-9 || output.value > (1.0 - 1.0e-9)) {
     output.value = NaN;
     output.isValid = false;
   } else {
     output.isValid = true;
   }
-  
+
   return output;
 }
 
@@ -1001,16 +1000,16 @@ function parseRatio(inString) {
 function parseTolerance(inString) {
   var output = new ParsedValue(0.0, false);
   var inTrim = trimString(inString);
-  
+
   output.value = Number(inTrim);
-  if (inTrim.length === 0 || isNaN(output.value) || 
+  if (inTrim.length === 0 || isNaN(output.value) ||
       output.value < 0.0 || output.value > (100.0 - 1.0e-7)) {
     output.value = NaN;
     output.isValid = false;
   } else {
     output.isValid = true;
   }
-  
+
   return output;
 }
 
@@ -1022,7 +1021,7 @@ function solveDivider() {
   var inputSettings = new Settings(0.5, ratioEnum.NOM, 0.49, 0.51, 0.0, seriesEnum.E24E96, 0.0, 30.0e6, 0.0);
   // Reuse parserOutput for return value from parser functions
   var parserOutput = new ParsedValue(0.0, false);
-  
+
   // Figure out whether to use E24 values, E96 values, or both.
   if (document.getElementById("resSeriesE24").checked) {
     inputSettings.resSeries = seriesEnum.E24;
@@ -1168,7 +1167,7 @@ function solveDivider() {
   // Store potential voltage divider solutions in the candidates
   // array.
   populate_candidates(inputSettings);
-  
+
   if (candidates.length < 1) {
     // No results were found.
     // Show a message in the results table that details all of

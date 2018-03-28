@@ -527,6 +527,8 @@ var resArrayUpper = [];
 
 // Create array of all unique combinations of two valid resistance values,
 // where the two values are within a factor of 10 of each other.
+// TODO: use bounds from min and max string resistance to further constrain
+// the values entering resArrayUpper.
 function initialize_resArrayUpper(minUpperRes) {
   resArrayUpper = [];
 
@@ -719,21 +721,60 @@ function populate_candidates(settings) {
   var tolDim = 1.0 - settings.resTolerance/100.0;
 
   var lowToUpRatio;
+  var lowToUpRatioMin;
+  var lowToUpRatioMax;
   var upToLowRatio;
+  var upToLowRatioMin;
+  var upToLowRatioMax;
 
   switch (settings.ratioType) {
   case ratioEnum.MIN:
-    lowToUpRatio = tolDim * ((1.0-settings.targetRatio)/settings.targetRatio) / tolAug;
-    upToLowRatio = tolAug * (settings.targetRatio/(1.0-settings.targetRatio)) / tolDim;
+    lowToUpRatio = tolDim * (1.0-settings.targetRatio) / (settings.targetRatio * tolAug);
+    lowToUpRatioMin = tolDim * (1.0-settings.ratioThresholdHigh) / (settings.ratioThresholdHigh * tolAug);
+    lowToUpRatioMax = tolDim * (1.0-settings.ratioThresholdLow) / (settings.ratioThresholdLow * tolAug);
     break;
   case ratioEnum.MAX:
-    lowToUpRatio = tolAug * ((1.0-settings.targetRatio)/settings.targetRatio) / tolDim;
-    upToLowRatio = tolDim * (settings.targetRatio/(1.0-settings.targetRatio)) / tolAug;
+    lowToUpRatio = tolAug * (1.0-settings.targetRatio) / (settings.targetRatio * tolDim);
+    lowToUpRatioMin = tolAug * (1.0-settings.ratioThresholdHigh) / (settings.ratioThresholdHigh * tolDim);
+    lowToUpRatioMax = tolAug * (1.0-settings.ratioThresholdLow) / (settings.ratioThresholdLow * tolDim);
     break;
   default:
     lowToUpRatio = ((1.0-settings.targetRatio)/settings.targetRatio);
-    upToLowRatio = (settings.targetRatio/(1.0-settings.targetRatio));
+    lowToUpRatioMin = ((1.0-settings.ratioThresholdHigh)/settings.ratioThresholdHigh);
+    lowToUpRatioMax = ((1.0-settings.ratioThresholdLow)/settings.ratioThresholdLow);
     break;
+  }
+
+  upToLowRatio = 1.0 / lowToUpRatio;
+  upToLowRatioMin = 1.0 / lowToUpRatioMax;
+  upToLowRatioMax = 1.0 / lowToUpRatioMin;
+
+  // Bound the candidate search range based on min and max
+  // string resistance.
+  var lowerStartRes = settings.minStringRes / (1.0 + lowToUpRatioMax);
+  var lowerStartIndex = findNearest(lowerStartRes);
+  while (lowerStartIndex > 0 && resArray[lowerStartIndex] > lowerStartRes) {
+    lowerStartIndex--;
+  }
+
+  var lowerEndRes = settings.maxStringRes / (1.0 + lowToUpRatioMin);
+  var lowerEndIndex = Math.max(1, findNearest(lowerEndRes));
+  while (lowerEndIndex < resArray.length && resArray[lowerEndIndex-1] < lowerEndRes) {
+    lowerEndIndex++;
+  }
+
+  var upperStartRes = settings.minStringRes / (1.0 + upToLowRatioMax);
+  var upperStartIndex = findNearestUpper(upperStartRes);
+  while (upperStartIndex > 0 && 
+         resArrayUpper[upperStartIndex].resistance > upperStartRes) {
+    upperStartIndex--;
+  }
+
+  var upperEndRes = settings.maxStringRes / (1.0 + upToLowRatioMin);
+  var upperEndIndex = Math.max(1,findNearestUpper(upperEndRes));
+  while (upperEndIndex < resArrayUpper.length && 
+         resArrayUpper[upperEndIndex-1].resistance < upperEndRes) {
+    upperEndIndex++;
   }
 
   candidates = [];
@@ -742,59 +783,71 @@ function populate_candidates(settings) {
   var nomRatio;
   var maxRatio;
   var stringRes;
+  var dimLower;
+  var augLower;
 
   var resLower;
-  var optUpper;
   var nearUpperPair;
 
   switch (settings.ratioType) {
   case ratioEnum.MIN:
-    for (jRes = 0; jRes < resArray.length; jRes++) {
+    for (jRes = lowerStartIndex; jRes < lowerEndIndex; jRes++) {
       // Test this resVal as a lower resistor.
       resLower = resArray[jRes];
-      optUpper = lowToUpRatio * resLower;
-      stringRes = resLower + optUpper;
 
-      if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
-        nearUpperPair = resArrayUpper[findNearestUpper(optUpper)];
-        minRatio = (tolDim*resLower) / ((tolDim*resLower)+(tolAug*nearUpperPair.resistance));
+      if ((1.0 + lowToUpRatioMax) * resLower >= settings.minStringRes && 
+          (1.0 + lowToUpRatioMin) * resLower <= settings.maxStringRes) {
+        nearUpperPair = resArrayUpper[findNearestUpper(lowToUpRatio * resLower)];
+        stringRes = resLower + nearUpperPair.resistance;
 
-        if (minRatio >= settings.ratioThresholdLow && minRatio <= settings.ratioThresholdHigh) {
-          candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, minRatio-settings.targetRatio));
+        if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
+          dimLower = tolDim * resLower;
+          minRatio = dimLower / (dimLower + tolAug * nearUpperPair.resistance);
+
+          if (minRatio >= settings.ratioThresholdLow && minRatio <= settings.ratioThresholdHigh) {
+            candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, minRatio-settings.targetRatio));
+          }
         }
       }
     }
     break;
   case ratioEnum.MAX:
-    for (jRes = 0; jRes < resArray.length; jRes++) {
+    for (jRes = lowerStartIndex; jRes < lowerEndIndex; jRes++) {
       // Test this resVal as a lower resistor.
       resLower = resArray[jRes];
-      optUpper = lowToUpRatio * resLower;
-      stringRes = resLower + optUpper;
 
-      if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
-        nearUpperPair = resArrayUpper[findNearestUpper(optUpper)];
-        maxRatio = (tolAug*resLower) / ((tolAug*resLower)+(tolDim*nearUpperPair.resistance));
+      if ((1.0 + lowToUpRatioMax) * resLower >= settings.minStringRes && 
+          (1.0 + lowToUpRatioMin) * resLower <= settings.maxStringRes) {
+        nearUpperPair = resArrayUpper[findNearestUpper(lowToUpRatio * resLower)];
+        stringRes = resLower + nearUpperPair.resistance;
 
-        if (maxRatio >= settings.ratioThresholdLow && maxRatio <= settings.ratioThresholdHigh) {
-          candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, maxRatio-settings.targetRatio));
+        if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
+          augLower = tolAug * resLower;
+          maxRatio = augLower / (augLower + tolDim * nearUpperPair.resistance);
+
+          if (maxRatio >= settings.ratioThresholdLow && maxRatio <= settings.ratioThresholdHigh) {
+            candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, maxRatio-settings.targetRatio));
+          }
         }
       }
     }
     break;
   default:
-    for (jRes = 0; jRes < resArray.length; jRes++) {
+    for (jRes = lowerStartIndex; jRes < lowerEndIndex; jRes++) {
       // Test this resVal as a lower resistor.
       resLower = resArray[jRes];
-      optUpper = lowToUpRatio * resLower;
-      stringRes = resLower + optUpper;
 
-      if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
-        nearUpperPair = resArrayUpper[findNearestUpper(optUpper)];
-        nomRatio = resLower / (resLower+nearUpperPair.resistance);
+      if ((1.0 + lowToUpRatioMax) * resLower >= settings.minStringRes && 
+          (1.0 + lowToUpRatioMin) * resLower <= settings.maxStringRes) {
+        nearUpperPair = resArrayUpper[findNearestUpper(lowToUpRatio * resLower)];
+        stringRes = resLower + nearUpperPair.resistance;
 
-        if (nomRatio >= settings.ratioThresholdLow && nomRatio <= settings.ratioThresholdHigh) {
-          candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, nomRatio-settings.targetRatio));
+        if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
+          nomRatio = resLower / stringRes;
+
+          if (nomRatio >= settings.ratioThresholdLow && nomRatio <= settings.ratioThresholdHigh) {
+            candidates.push(new Candidate(nearUpperPair.resUpper1, nearUpperPair.resUpper2, resLower, nomRatio-settings.targetRatio));
+          }
         }
       }
     }
@@ -802,57 +855,67 @@ function populate_candidates(settings) {
   }
 
   var thisUpperPair;
-  var optLower;
   var nearLower;
 
   switch (settings.ratioType) {
   case ratioEnum.MIN:
-    for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
+    for (jRes = upperStartIndex; jRes < upperEndIndex; jRes++) {
       // Test this UpperPair as an upper resistor pair.
       thisUpperPair = resArrayUpper[jRes];
-      optLower = upToLowRatio * thisUpperPair.resistance;
-      stringRes = thisUpperPair.resistance + optLower;
 
-      if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
-        nearLower = resArray[findNearest(optLower)];
-        minRatio = (tolDim*nearLower) / ((tolDim*nearLower)+(tolAug*thisUpperPair.resistance));
+      if ((1.0 + upToLowRatioMax) * thisUpperPair.resistance >= settings.minStringRes && 
+          (1.0 + upToLowRatioMin) * thisUpperPair.resistance <= settings.maxStringRes) {
+        nearLower = resArray[findNearest(upToLowRatio * thisUpperPair.resistance)];
+        stringRes = nearLower + thisUpperPair.resistance;
 
-        if (minRatio >= settings.ratioThresholdLow && minRatio <= settings.ratioThresholdHigh) {
-          candidates.push(new Candidate(thisUpperPair.resUpper1, thisUpperPair.resUpper2, nearLower, minRatio-settings.targetRatio));
+        if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
+          dimLower = tolDim * nearLower;
+          minRatio = dimLower / (dimLower + tolAug * thisUpperPair.resistance);
+
+          if (minRatio >= settings.ratioThresholdLow && minRatio <= settings.ratioThresholdHigh) {
+            candidates.push(new Candidate(thisUpperPair.resUpper1, thisUpperPair.resUpper2, nearLower, minRatio-settings.targetRatio));
+          }
         }
       }
     }
     break;
   case ratioEnum.MAX:
-    for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
+    for (jRes = upperStartIndex; jRes < upperEndIndex; jRes++) {
       // Test this UpperPair as an upper resistor pair.
       thisUpperPair = resArrayUpper[jRes];
-      optLower = upToLowRatio * thisUpperPair.resistance;
-      stringRes = thisUpperPair.resistance + optLower;
 
-      if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
-        nearLower = resArray[findNearest(optLower)];
-        maxRatio = (tolAug*nearLower) / ((tolAug*nearLower)+(tolDim*thisUpperPair.resistance));
+      if ((1.0 + upToLowRatioMax) * thisUpperPair.resistance >= settings.minStringRes && 
+          (1.0 + upToLowRatioMin) * thisUpperPair.resistance <= settings.maxStringRes) {
+        nearLower = resArray[findNearest(upToLowRatio * thisUpperPair.resistance)];
+        stringRes = nearLower + thisUpperPair.resistance;
 
-        if (maxRatio >= settings.ratioThresholdLow && maxRatio <= settings.ratioThresholdHigh) {
-          candidates.push(new Candidate(thisUpperPair.resUpper1, thisUpperPair.resUpper2, nearLower, maxRatio-settings.targetRatio));
+        if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
+          augLower = tolAug * nearLower;
+          maxRatio = augLower / (augLower + tolDim * thisUpperPair.resistance);
+
+          if (maxRatio >= settings.ratioThresholdLow && maxRatio <= settings.ratioThresholdHigh) {
+            candidates.push(new Candidate(thisUpperPair.resUpper1, thisUpperPair.resUpper2, nearLower, maxRatio-settings.targetRatio));
+          }
         }
       }
     }
     break;
   default:
-    for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
+    for (jRes = upperStartIndex; jRes < upperEndIndex; jRes++) {
       // Test this UpperPair as an upper resistor pair.
       thisUpperPair = resArrayUpper[jRes];
-      optLower = upToLowRatio * thisUpperPair.resistance;
-      stringRes = thisUpperPair.resistance + optLower;
 
-      if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
-        nearLower = resArray[findNearest(optLower)];
-        nomRatio = nearLower / (nearLower+thisUpperPair.resistance);
+      if ((1.0 + upToLowRatioMax) * thisUpperPair.resistance >= settings.minStringRes && 
+          (1.0 + upToLowRatioMin) * thisUpperPair.resistance <= settings.maxStringRes) {
+        nearLower = resArray[findNearest(upToLowRatio * thisUpperPair.resistance)];
+        stringRes = nearLower + thisUpperPair.resistance;
 
-        if (nomRatio >= settings.ratioThresholdLow && nomRatio <= settings.ratioThresholdHigh) {
-          candidates.push(new Candidate(thisUpperPair.resUpper1, thisUpperPair.resUpper2, nearLower, nomRatio-settings.targetRatio));
+        if (stringRes >= settings.minStringRes && stringRes <= settings.maxStringRes) {
+          nomRatio = nearLower / stringRes;
+
+          if (nomRatio >= settings.ratioThresholdLow && nomRatio <= settings.ratioThresholdHigh) {
+            candidates.push(new Candidate(thisUpperPair.resUpper1, thisUpperPair.resUpper2, nearLower, nomRatio-settings.targetRatio));
+          }
         }
       }
     }
@@ -911,7 +974,8 @@ function displayDiagnostics(settings) {
 // difference from the target ratio, collects best matches into
 // groups, and displays them.
 function sortAndDisplayResults(settings) {
-
+  // These constants are used to calculate minRatio, nomRatio,
+  // and maxRatio for each result below.
   var tolAug = 1.0 + settings.resTolerance/100.0;
   var tolDim = 1.0 - settings.resTolerance/100.0;
 

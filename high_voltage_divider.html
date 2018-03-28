@@ -739,9 +739,9 @@ function populate_candidates(settings) {
     lowToUpRatioMax = tolAug * (1.0-settings.ratioThresholdLow) / (settings.ratioThresholdLow * tolDim);
     break;
   default:
-    lowToUpRatio = ((1.0-settings.targetRatio)/settings.targetRatio);
-    lowToUpRatioMin = ((1.0-settings.ratioThresholdHigh)/settings.ratioThresholdHigh);
-    lowToUpRatioMax = ((1.0-settings.ratioThresholdLow)/settings.ratioThresholdLow);
+    lowToUpRatio = (1.0-settings.targetRatio) / settings.targetRatio;
+    lowToUpRatioMin = (1.0-settings.ratioThresholdHigh) / settings.ratioThresholdHigh;
+    lowToUpRatioMax = (1.0-settings.ratioThresholdLow) / settings.ratioThresholdLow;
     break;
   }
 

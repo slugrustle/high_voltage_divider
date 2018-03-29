@@ -527,37 +527,80 @@ var resArrayUpper = [];
 
 // Create array of all unique combinations of two valid resistance values,
 // where the two values are within a factor of 10 of each other.
-// TODO: use bounds from min and max string resistance to further constrain
-// the values entering resArrayUpper.
-function initialize_resArrayUpper(minUpperRes) {
-  resArrayUpper = [];
+function initialize_resArrayUpper(settings) {
 
-  // Only include resistances from resArray with value >= minUpperRes
-  var startIndex = 0;
-  if (minUpperRes > 0) {
-    startIndex = Math.min(resArray.length-1, findNearest(minUpperRes));
-    while (startIndex < resArray.length-1 && resArray[startIndex] < minUpperRes) {
-      startIndex++;
-    }
+  var tolAug = 1.0 + settings.resTolerance/100.0;
+  var tolDim = 1.0 - settings.resTolerance/100.0;
+
+  var upToLowRatioMin;
+  var upToLowRatioMax;
+
+  switch (settings.ratioType) {
+  case ratioEnum.MIN:
+    upToLowRatioMin = settings.ratioThresholdLow * tolAug / (tolDim * (1.0-settings.ratioThresholdLow));
+    upToLowRatioMax = settings.ratioThresholdHigh * tolAug / (tolDim * (1.0-settings.ratioThresholdHigh));
+    break;
+  case ratioEnum.MAX:
+    upToLowRatioMin = settings.ratioThresholdLow * tolDim / (tolAug * (1.0-settings.ratioThresholdLow));
+    upToLowRatioMax = settings.ratioThresholdHigh * tolDim / (tolAug * (1.0-settings.ratioThresholdHigh));
+    break;
+  default:
+    upToLowRatioMin = settings.ratioThresholdLow / (1.0-settings.ratioThresholdLow);
+    upToLowRatioMax = settings.ratioThresholdHigh / (1.0-settings.ratioThresholdHigh);
+    break;
   }
 
-  var jRes1;
-  var resVal1;
-  var ten_resVal1;
-  var jRes2;
-  var limitIndx;
+  // upperStartRes and upperEndRes set limits on the series resistance
+  // of the two upper resistors, while startRes1, endRes1, and endRes2
+  // below set limits on individual resistor values.
+  var upperStartRes = settings.minStringRes / (1.0 + upToLowRatioMax);
+  upperStartRes = Math.max(upperStartRes, 2.0 * settings.minUpperRes);
+  var upperEndRes = settings.maxStringRes / (1.0 + upToLowRatioMin);
 
-  for (jRes1 = startIndex; jRes1 < resArray.length; jRes1++) {
+  resArrayUpper = [];
+
+  var jRes1;
+  var startRes1
+  var startIndex1;
+  var endRes1
+  var endIndex1;
+  var resVal1;
+  var jRes2;
+  var resVal2;
+  var endRes2;
+  var endIndx2;
+  var upperRes;
+
+  // Bound the range of resistance values considered
+  // based on minimum upper resistor resistance as well as
+  // min and max string resistance.
+  startRes1 = Math.max(settings.minUpperRes, upperStartRes/11.0);
+  startIndex1 = Math.max(0, findNearest(startRes1)-1);
+  while (startIndex1 < resArray.length-1 && resArray[startIndex1] < startRes1) {
+    startIndex1++;
+  }
+
+  endRes1 = upperEndRes / 2.0;
+  endIndex1 = Math.max(0, findNearest(endRes1)-1);
+  while (endIndex1 < resArray.length && resArray[endIndex1-1] < endRes1) {
+    endIndex1++;
+  }
+
+  for (jRes1 = startIndex1; jRes1 < endIndex1; jRes1++) {
     resVal1 = resArray[jRes1];
-    ten_resVal1 = 10.0 * resVal1;
-    limitIndx = Math.max(0, findNearest(ten_resVal1) - 1);
-    
-    while (limitIndx < resArray.length && resArray[limitIndx-1] < ten_resVal1) {
-      limitIndx++;
+    endRes2 = Math.min(10.0 * resVal1, upperEndRes - resVal1);
+    endIndx2 = Math.max(0, findNearest(endRes2)-1);
+    while (endIndx2 < resArray.length && resArray[endIndx2-1] < endRes2) {
+      endIndx2++;
     }
     
-    for (jRes2 = jRes1; jRes2 < limitIndx; jRes2++) {
-      resArrayUpper.push(new UpperPair(resArray[jRes2], resVal1));
+    for (jRes2 = jRes1; jRes2 < endIndx2; jRes2++) {
+      resVal2 = resArray[jRes2];
+      upperRes = resVal1 + resVal2;
+
+      if (upperRes >= upperStartRes && upperRes <= upperEndRes) {
+        resArrayUpper.push(new UpperPair(resVal2, resVal1));
+      }
     }
   }
 
@@ -647,27 +690,29 @@ function prune_resArrayUpper(resSeries) {
     }
   }
 
-  // Copy all elements in resArrayUpper not on the cutList
-  // into scratchArray.
-  for (jTest = 0; jTest < cutList[0]; jTest++) {
-    scratchArray.push(resArrayUpper[jTest]);
-  }
-
-  var jCut;
-
-  for (jCut = 0; jCut < cutList.length-1; jCut++) {
-    for (jTest = cutList[jCut]+1; jTest < cutList[jCut+1]; jTest++) {
+  if (cutList.length > 0) {
+    // Copy all elements in resArrayUpper not on the cutList
+    // into scratchArray.
+    for (jTest = 0; jTest < cutList[0]; jTest++) {
       scratchArray.push(resArrayUpper[jTest]);
     }
-  }
 
-  for (jTest = cutList[cutList.length-1]+1; jTest < resArrayUpper.length; jTest++) {
-    scratchArray.push(resArrayUpper[jTest]);
-  }
+    var jCut;
 
-  // Update resArrayUpper.
-  resArrayUpper = scratchArray;
-  scratchArray = [];
+    for (jCut = 0; jCut < cutList.length-1; jCut++) {
+      for (jTest = cutList[jCut]+1; jTest < cutList[jCut+1]; jTest++) {
+        scratchArray.push(resArrayUpper[jTest]);
+      }
+    }
+
+    for (jTest = cutList[cutList.length-1]+1; jTest < resArrayUpper.length; jTest++) {
+      scratchArray.push(resArrayUpper[jTest]);
+    }
+
+    // Update resArrayUpper.
+    resArrayUpper = scratchArray;
+    scratchArray = [];
+  }
 
   return;
 }
@@ -763,20 +808,6 @@ function populate_candidates(settings) {
     lowerEndIndex++;
   }
 
-  var upperStartRes = settings.minStringRes / (1.0 + upToLowRatioMax);
-  var upperStartIndex = findNearestUpper(upperStartRes);
-  while (upperStartIndex > 0 && 
-         resArrayUpper[upperStartIndex].resistance > upperStartRes) {
-    upperStartIndex--;
-  }
-
-  var upperEndRes = settings.maxStringRes / (1.0 + upToLowRatioMin);
-  var upperEndIndex = Math.max(1,findNearestUpper(upperEndRes));
-  while (upperEndIndex < resArrayUpper.length && 
-         resArrayUpper[upperEndIndex-1].resistance < upperEndRes) {
-    upperEndIndex++;
-  }
-
   candidates = [];
   var jRes;
   var minRatio;
@@ -859,7 +890,7 @@ function populate_candidates(settings) {
 
   switch (settings.ratioType) {
   case ratioEnum.MIN:
-    for (jRes = upperStartIndex; jRes < upperEndIndex; jRes++) {
+    for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
       // Test this UpperPair as an upper resistor pair.
       thisUpperPair = resArrayUpper[jRes];
 
@@ -880,7 +911,7 @@ function populate_candidates(settings) {
     }
     break;
   case ratioEnum.MAX:
-    for (jRes = upperStartIndex; jRes < upperEndIndex; jRes++) {
+    for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
       // Test this UpperPair as an upper resistor pair.
       thisUpperPair = resArrayUpper[jRes];
 
@@ -901,7 +932,7 @@ function populate_candidates(settings) {
     }
     break;
   default:
-    for (jRes = upperStartIndex; jRes < upperEndIndex; jRes++) {
+    for (jRes = 0; jRes < resArrayUpper.length; jRes++) {
       // Test this UpperPair as an upper resistor pair.
       thisUpperPair = resArrayUpper[jRes];
 
@@ -1318,7 +1349,7 @@ function solveDivider() {
 
   // Fill in resArrayUpper with all unique combinations of two
   // resistors (value >= minUpperRes) from resArray
-  initialize_resArrayUpper(inputSettings.minUpperRes);
+  initialize_resArrayUpper(inputSettings);
 
   // It turns out there are a lot of ways to make the same resistance value
   // from two valid E24 and/or E96 resistors. Only keep the useful ones.

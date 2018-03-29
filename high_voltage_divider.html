@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <!--
-High Voltage Divider Calculator v1.1 - Finds voltage dividers with two upper
+High Voltage Divider Calculator v1.2 - Finds voltage dividers with two upper
 resistors nearest a target ratio using real-world resistor values.
 
 Written in 2018 by Ben Tesch
@@ -201,7 +201,7 @@ td.paramLabel {
 </head>
 
 <body>
-<h3>High Voltage Divider Calculator&#x2001;v1.1&#x2001;2018-03-25</h3>
+<h3>High Voltage Divider Calculator&#x2001;v1.2&#x2001;2018-03-28</h3>
 <div style="display: inline-block;">
   <table id="inputTable">
     <tr>
@@ -797,6 +797,7 @@ function populate_candidates(settings) {
   // Bound the candidate search range based on min and max
   // string resistance.
   var lowerStartRes = settings.minStringRes / (1.0 + lowToUpRatioMax);
+  lowerStartRes = Math.max(lowerStartRes, 2.0 * settings.minUpperRes * upToLowRatioMin);
   var lowerStartIndex = findNearest(lowerStartRes);
   while (lowerStartIndex > 0 && resArray[lowerStartIndex] > lowerStartRes) {
     lowerStartIndex--;

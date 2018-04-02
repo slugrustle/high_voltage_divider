@@ -690,7 +690,7 @@ function initialize_resArrayUpper(settings) {
   }
 
   var endRes1 = upperEndRes / 2.0;
-  var endIndex1 = Math.max(0, findNearest(endRes1)-1);
+  var endIndex1 = Math.max(1, findNearest(endRes1)-1);
   while (endIndex1 < resArray.length && resArray[endIndex1-1] < endRes1) {
     endIndex1++;
   }
@@ -699,7 +699,7 @@ function initialize_resArrayUpper(settings) {
   for (jRes1 = startIndex1; jRes1 < endIndex1; jRes1++) {
     var resVal1 = resArray[jRes1];
     var endRes2 = Math.min(10.0 * resVal1, upperEndRes - resVal1);
-    var endIndx2 = Math.max(0, findNearest(endRes2)-1);
+    var endIndx2 = Math.max(1, findNearest(endRes2)-1);
     while (endIndx2 < resArray.length && resArray[endIndx2-1] < endRes2) {
       endIndx2++;
     }

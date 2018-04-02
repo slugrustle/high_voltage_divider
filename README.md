@@ -12,7 +12,7 @@ calculator is a single .html file with inline Javascript.
 ## Getting Started
 
 Download Download the [latest release](https://github.com/slugrustle/high_voltage_divider/releases)
-of high_voltage_divider.html and run it in any browser that supports modern
+of high\_voltage\_divider.html and run it in any browser that supports modern
 Javascript and HTML/CSS.
 
 ## Contributing
@@ -27,10 +27,14 @@ Ben Tesch - [slugrustle](https://github.com/slugrustle)
 
 ## License
 
-This project is released under Creative Commons
-[CC0](https://creativecommons.org/publicdomain/zero/1.0/)
-1.0 Universal Public Domain Dedication. See LICENSE.txt or
-the first comment in high_voltage_divider.html.
+high\_voltage\_divider.html contains the function download_csv()
+which is modified from [this Stack Overflow post](https://stackoverflow.com/a/33542499)
+and is therefore distributed under the 
+[CC BY-SA 3.0 license](https://creativecommons.org/licenses/by-sa/3.0/).
+
+The remainder of the high\_voltage\_divider project is distributed under the
+[CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+See also LICENSE.txt or the first comment in high\_voltage\_divider.html.
 
 ## Acknowledgment
 

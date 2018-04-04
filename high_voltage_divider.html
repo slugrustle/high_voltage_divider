@@ -699,13 +699,13 @@ function initialize_resArrayUpper(settings) {
   for (jRes1 = startIndex1; jRes1 < endIndex1; jRes1++) {
     var resVal1 = resArray[jRes1];
     var endRes2 = Math.min(10.0 * resVal1, upperEndRes - resVal1);
-    var endIndx2 = Math.max(1, findNearest(endRes2)-1);
-    while (endIndx2 < resArray.length && resArray[endIndx2-1] < endRes2) {
-      endIndx2++;
+    var endIndex2 = Math.max(1, findNearest(endRes2)-1);
+    while (endIndex2 < resArray.length && resArray[endIndex2-1] < endRes2) {
+      endIndex2++;
     }
-    
+
     var jRes2;
-    for (jRes2 = jRes1; jRes2 < endIndx2; jRes2++) {
+    for (jRes2 = jRes1; jRes2 < endIndex2; jRes2++) {
       var resVal2 = resArray[jRes2];
       var upperRes = resVal1 + resVal2;
 
@@ -1825,6 +1825,16 @@ function solveDivider() {
   // Fill in resArrayUpper with all unique combinations of two
   // resistors (value >= minUpperRes) from resArray
   initialize_resArrayUpper(inputSettings);
+
+  if (resArrayUpper.length < 1) {
+    // No valid UpperPairs from search criteria.
+    // Show a message in the results table that details all of
+    // the user input settings.
+    // This can happen for Max String Res == 3 and any ratio
+    // not close enough to 1/3.
+    displayDiagnostics(inputSettings);
+    return;
+  }
 
   // It turns out there are a lot of ways to make the same resistance value
   // from two valid E24 and/or E96 resistors. Only keep the useful ones.

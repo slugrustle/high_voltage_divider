@@ -27,9 +27,9 @@ Ben Tesch - [slugrustle](https://github.com/slugrustle)
 
 ## License
 
-high\_voltage\_divider.html contains the function download_csv()
-which is modified from [this Stack Overflow post](https://stackoverflow.com/a/33542499)
-and is therefore distributed under the 
+high\_voltage\_divider.html contains the functions download_csv() and download_xlsx(),
+which are modified from [this Stack Overflow post](https://stackoverflow.com/a/33542499)
+and are therefore distributed under the 
 [CC BY-SA 3.0 license](https://creativecommons.org/licenses/by-sa/3.0/).
 
 The remainder of the high\_voltage\_divider project is distributed under the

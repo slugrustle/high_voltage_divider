@@ -690,14 +690,14 @@ function initialize_resArrayUpper(resArray) {
   // based on minimum upper resistor resistance as well as
   // min and max string resistance.
   var startRes1 = Math.max(settings.minUpperRes, upperStartRes/11.0);
-  var startIndex1 = Math.max(0, findNearest(startRes1, resArray)-1);
-  while (startIndex1 < resArray.length-1 && resArray[startIndex1] < startRes1) {
+  var startIndex1 = Math.max(0, findNearest(startRes1, resArray)-2);
+  while (startIndex1 < resArray.length && resArray[startIndex1] < startRes1) {
     startIndex1++;
   }
 
   var endRes1 = upperEndRes / 2.0;
-  var endIndex1 = Math.max(1, findNearest(endRes1, resArray)-1);
-  while (endIndex1 < resArray.length && resArray[endIndex1-1] < endRes1) {
+  var endIndex1 = Math.max(1, findNearest(endRes1, resArray)-2);
+  while (endIndex1 < resArray.length && resArray[endIndex1-1] <= endRes1) {
     endIndex1++;
   }
 
@@ -705,8 +705,8 @@ function initialize_resArrayUpper(resArray) {
   for (jRes1 = startIndex1; jRes1 < endIndex1; jRes1++) {
     var resVal1 = resArray[jRes1];
     var endRes2 = Math.min(10.0 * resVal1, upperEndRes - resVal1);
-    var endIndex2 = Math.max(1, findNearest(endRes2, resArray)-1);
-    while (endIndex2 < resArray.length && resArray[endIndex2-1] < endRes2) {
+    var endIndex2 = Math.max(1, findNearest(endRes2, resArray)-2);
+    while (endIndex2 < resArray.length && resArray[endIndex2-1] <= endRes2) {
       endIndex2++;
     }
 
@@ -777,7 +777,6 @@ function prune_resArrayUpper(resArrayUpper) {
   resArrayUpper = scratchArray;
   scratchArray = [];
   duplicates = [];
-
 
   // Second stage of pruning. Some values that are very close
   // to each other come through; this removes them.

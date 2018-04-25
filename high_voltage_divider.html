@@ -294,7 +294,7 @@ td.paramLabel {
   </tr>
   <tr>
     <td class="labelCol">Max String Resistance</td>
-    <td class="buttonCol"><input id="maxStringResistance" value="20M" maxlength="30"/></td>
+    <td class="buttonCol"><input id="maxStringResistance" value="30M" maxlength="30"/></td>
     <td>&#x03A9;</td>
   </tr>
   <tr>
@@ -1961,7 +1961,7 @@ window.voltDiv.solveDivider = (function() {
       title_div.style.display = 'block';
 
       error_div = document.getElementById('errorDiv');
-      error_div.textContent = 'Min String Resistance was set to ' + resValToString(settings.minStringRes, 3) +
+      error_div.textContent = 'Min Upper1,2 Resistance was set to ' + resValToString(settings.minUpperRes, 3) +
         ', which will yield no results. The largest resistor value in the chosen series is ' +
         resValToString(maxResistance, 3) + '.';
       error_div.style.display = 'inline-block';

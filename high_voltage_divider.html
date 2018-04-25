@@ -258,7 +258,7 @@ td.paramLabel {
 </head>
 
 <body>
-<div class="titleDiv"><span class="titleSpan">High Voltage Divider Calculator&#x2001;v1.5&#x2001;2018-04-10</span></div>
+<div class="titleDiv"><span class="titleSpan">High Voltage Divider Calculator&#x2003;v1.5&#x2003;2018-04-10</span></div>
 <table id="inputTable">
   <tr>
     <td class="labelCol">Target Divider Ratio</td>
@@ -323,7 +323,7 @@ td.paramLabel {
 <div id="eqsDiv" style="display: none;">
   <div style="float: left; margin-right: 14pt;">
     <!-- Begin High Voltage Divider SVG Image -->
-    <svg width="150.89pt" height="235.53pt" version="1.1" viewBox="0 0 301.78535 471.05424" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" role="img" aria-label="High Voltage Divider Circuit Diagram">
+    <svg xmlns="http://www.w3.org/2000/svg" width="150.89pt" height="235.53pt" viewBox="0 0 301.78535 471.05424" role="img" aria-label="High Voltage Divider Circuit Diagram">
     <title>High Voltage Divider Circuit Diagram</title>
     <desc>Three resistor voltage divider. Upper two series resistors connect to input and output; lower resistor connects to output and ground.</desc>
     <g transform="translate(-174.43 -103.47)">
@@ -343,15 +343,15 @@ td.paramLabel {
     <!-- End High Voltage Divider SVG Image -->
   </div>
   <div style="display: inline-block; font-size: 12pt;">
-    <div style="margin-bottom: 14pt;"><b>String Resistance</b>&#x2000;=&#x2000;Lower + Upper1 + Upper2</div>
-    <div style="margin-bottom: 14pt;"><b>Divider Ratio</b>&#x2000;=&#x2000;Vo <b>/</b> Vi</div>
-    <div style="margin-bottom: 4pt;"><b>Min Ratio</b>&#x2000;=&#x2000;LowerDim <b>/</b> (LowerDim + UpperAug)</div>
-    <div style="margin-bottom: 4pt;"><i>LowerDim</i>&#x2000;=&#x2000;(1 &#x2212; Tolerance<b>/</b>100) &#x2022; Lower</div>
-    <div style="margin-bottom: 14pt;"><i>UpperAug</i>&#x2000;=&#x2000;(1 + Tolerance<b>/</b>100) &#x2022; (Upper1 + Upper2)</div>
-    <div style="margin-bottom: 14pt;"><b>Nom Ratio</b>&#x2000;=&#x2000;Lower <b>/</b> (Lower + Upper1 + Upper2)</div>
-    <div style="margin-bottom: 4pt;"><b>Max Ratio</b>&#x2000;=&#x2000;LowerAug <b>/</b> (LowerAug + UpperDim)</div>
-    <div style="margin-bottom: 4pt;"><i>LowerAug</i>&#x2000;=&#x2000;(1 + Tolerance<b>/</b>100) &#x2022; Lower</div>
-    <div><i>UpperDim</i>&#x2000;=&#x2000;(1 &#x2212; Tolerance<b>/</b>100) &#x2022; (Upper1 + Upper2)<br/></div>
+    <div style="margin-bottom: 14pt;"><b>String Resistance</b>&#x2002;=&#x2002;Lower + Upper1 + Upper2</div>
+    <div style="margin-bottom: 14pt;"><b>Divider Ratio</b>&#x2002;=&#x2002;Vo <b>/</b> Vi</div>
+    <div style="margin-bottom: 4pt;"><b>Min Ratio</b>&#x2002;=&#x2002;LowerDim <b>/</b> (LowerDim + UpperAug)</div>
+    <div style="margin-bottom: 4pt;"><i>LowerDim</i>&#x2002;=&#x2002;(1 &#x2212; Tolerance<b>/</b>100) &#x2022; Lower</div>
+    <div style="margin-bottom: 14pt;"><i>UpperAug</i>&#x2002;=&#x2002;(1 + Tolerance<b>/</b>100) &#x2022; (Upper1 + Upper2)</div>
+    <div style="margin-bottom: 14pt;"><b>Nom Ratio</b>&#x2002;=&#x2002;Lower <b>/</b> (Lower + Upper1 + Upper2)</div>
+    <div style="margin-bottom: 4pt;"><b>Max Ratio</b>&#x2002;=&#x2002;LowerAug <b>/</b> (LowerAug + UpperDim)</div>
+    <div style="margin-bottom: 4pt;"><i>LowerAug</i>&#x2002;=&#x2002;(1 + Tolerance<b>/</b>100) &#x2022; Lower</div>
+    <div><i>UpperDim</i>&#x2002;=&#x2002;(1 &#x2212; Tolerance<b>/</b>100) &#x2022; (Upper1 + Upper2)<br/></div>
   </div>
 </div>
 
@@ -2768,7 +2768,7 @@ window.voltDiv.download_xlsx = (function() {
       
     if (settings.isExpr) {
       sheet1_str += '<row r="1" spans="1:9">' +
-        '<c r="A1" s="3" t="inlineStr"><is><t>Target Ratio Expression:\u2000</t></is></c>' +
+        '<c r="A1" s="3" t="inlineStr"><is><t>Target Ratio Expression:\u2002</t></is></c>' +
         '<c r="B1" s="3"/>' + 
         '<c r="C1" t="inlineStr"><is><t>' + settings.ratioExpr + '</t></is></c>' +
         '<c r="D1"/><c r="E1"/><c r="F1"/><c r="G1"/><c r="H1"/><c r="I1"/></row>';

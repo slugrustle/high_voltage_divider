@@ -27,17 +27,17 @@ Ben Tesch - [slugrustle](https://github.com/slugrustle)
 
 ## License
 
-high\_voltage\_divider.html contains the functions download_csv and download_xlsx,
+high\_voltage\_divider.html contains the functions download\_csv and download\_xlsx,
 which are modified from [this Stack Overflow post](https://stackoverflow.com/a/33542499)
 and are therefore distributed under the 
 [CC BY-SA 3.0 license](https://creativecommons.org/licenses/by-sa/3.0/).
 
-The remainder of the high\_voltage\_divider project, including the functions generate_csv() and generate_xslx(),
+The remainder of the high\_voltage\_divider project, including the functions generate\_csv() and generate\_xslx(),
 is distributed under the [CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
 See also LICENSE.txt or the first comment in high\_voltage\_divider.html.
 
 ## Acknowledgment
 
-[svgminify](http://www.svgminify.com/) was handy
+[svgo](https://github.com/svg/svgo) was handy
 for reducing the size of the inline .svg images
 used in this project.

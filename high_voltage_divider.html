@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8"/>
 <!--
-High Voltage Divider Calculator v1.5 - Finds voltage dividers with two upper
+High Voltage Divider Calculator v1.6 - Finds voltage dividers with two upper
 resistors nearest a target ratio using real-world resistor values.
 
 Written in 2018 by Ben Tesch
 Distributed at https://github.com/slugrustle/high_voltage_divider
 
-high_voltage_divider.html contains the functions download_csv() and
-download_xlsx(), both of which which come from a Stack Overflow post
-https://stackoverflow.com/a/33542499
-by user Ludovic Feltz (on 2015-11-5), edited by user Smi (on 2016-08-12).
-I retrieved this code on 2018-03-31 and changed it slightly.
-Stack Overflow code is distributed under the CC BY-SA 3.0 license:
-https://creativecommons.org/licenses/by-sa/3.0/
-The remainder of high_voltage_divider.html is under the CC0 1.0 Universal
-Public Domain Dedication, which is reproduced below.
+high_voltage_divider.html contains the functions download_csv and
+download_xlsx, both of which which come from a Stack Overflow post
+https://stackoverflow.com/a/33542499 by user Ludovic Feltz (on 2015-11-5), 
+edited by user Smi (on 2016-08-12). I retrieved this code on 2018-03-31 and 
+changed it slightly. Stack Overflow code is distributed under the 
+CC BY-SA 3.0 license: https://creativecommons.org/licenses/by-sa/3.0/
+The remainder of high_voltage_divider.html, including generate_csv() and
+generate_xslx(), is under the CC0 1.0 Universal Public Domain Dedication, 
+which is reproduced below.
 
 To the extent possible under law, the author has dedicated all copyright
 and related and neighboring rights to this software to the public domain
@@ -258,7 +258,7 @@ td.paramLabel {
 </head>
 
 <body>
-<div class="titleDiv"><span class="titleSpan">High Voltage Divider Calculator&#x2003;v1.5&#x2003;2018-04-10</span></div>
+<div class="titleDiv"><span class="titleSpan">High Voltage Divider Calculator&#x2003;v1.6&#x2003;2018-05-02</span></div>
 <table id="inputTable">
   <tr>
     <td class="labelCol">Target Divider Ratio</td>
@@ -323,23 +323,19 @@ td.paramLabel {
 <div id="eqsDiv" style="display: none;">
   <div style="float: left; margin-right: 14pt;">
     <!-- Begin High Voltage Divider SVG Image -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="150.89pt" height="235.53pt" viewBox="0 0 301.78535 471.05424" role="img" aria-label="High Voltage Divider Circuit Diagram">
-    <title>High Voltage Divider Circuit Diagram</title>
-    <desc>Three resistor voltage divider. Upper two series resistors connect to input and output; lower resistor connects to output and ground.</desc>
-    <g transform="translate(-174.43 -103.47)">
-    <g transform="translate(59.372 125.46)">
-    <circle cx="185.09" cy="23.362" r="5" fill="none" stroke="#000" stroke-width="1px"/>
-    <text x="112.10548" y="222.3307" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="112.10548" y="222.3307" font-size="37.333px">Upper2</tspan></text>
-    <text x="133.39714" y="353.69226" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="133.39714" y="353.69226" font-size="37.333px">Lower</tspan></text>
-    <path d="m280 276.1h74.875" fill="none" stroke="#000" stroke-width=".8653px"/>
-    <circle cx="360.11" cy="276.1" r="5" fill="none" stroke="#000" stroke-width="1px"/>
-    <circle cx="280" cy="276.39" r="2" stroke="#000"/>
-    <text x="165.63867" y="6.3668594" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="165.63867" y="6.3668594" font-size="37.333px">Vi</tspan></text>
-    <text x="373.44031" y="289.44717" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" stroke-width="1px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="373.44031" y="289.44717" font-size="37.333px">Vo</tspan></text>
-    <text x="111.8138" y="110.81879" fill="#000000" font-family="sans-serif" font-size="37.333px" letter-spacing="0px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="111.8138" y="110.81879" font-size="37.333px">Upper1</tspan></text>
-    <g transform="translate(.00229 1.213)">
-    <path d="m280 427.34v-14.98m-20.004 14.98h39.996m-23.994 20.006h8m-16-10h24m-12.004-153.21v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25m6e-3 18.222-6e-3 -18.222m-3.2e-4 -127.99v18m2.3e-4 -128v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25m0-111.27v1.2658m0-111.27v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25m0-110 1e-3 -22.73h-89.842" fill="none" stroke="#000"/>
-    </g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 257.535 476.211" height="317.474" width="171.69" role="img" aria-label="High Voltage Divider Circuit Diagram">
+      <title>High Voltage Divider Circuit Diagram</title>
+      <desc>Three resistor voltage divider. Upper two series resistors connect to input and output; lower resistor connects to output and ground.</desc>
+      <g transform="translate(-115.059 27.154)"><circle cx="279.92" cy="18.206" r="5" fill="none" stroke="#000"/>
+      <text style="line-height:125%" x="112.105" y="222.331" font-weight="400" font-size="37.333" font-family="sans-serif" letter-spacing="0" word-spacing="0"><tspan x="112.105" y="222.331">Upper2</tspan></text>
+      <text style="line-height:125%" x="133.397" y="353.692" font-weight="400" font-size="37.333" font-family="sans-serif" letter-spacing="0" word-spacing="0"><tspan x="133.397" y="353.692">Lower</tspan></text>
+      <path d="M280 276.103l66.157.008" fill="none" stroke="#000" stroke-width=".865"/><circle cx="351.108" cy="276.103" r="5" fill="none" stroke="#000"/><circle cx="280" cy="276.393" r="2" stroke="#000"/>
+      <text style="line-height:125%" x="260.467" y="1.211" font-weight="400" font-size="37.333" font-family="sans-serif" letter-spacing="0" word-spacing="0"><tspan x="260.467" y="1.211">Vi</tspan></text>
+      <text style="line-height:125%" x="329.19" y="260.197" font-weight="400" font-size="37.333" font-family="sans-serif" letter-spacing="0" word-spacing="0"><tspan x="329.19" y="260.197">Vo</tspan></text>
+      <text style="line-height:125%" x="111.814" y="110.819" font-weight="400" font-size="37.333" font-family="sans-serif" letter-spacing="0" word-spacing="0"><tspan x="111.814" y="110.819">Upper1</tspan></text>
+      <path d="M280.006 428.55v-14.98m-20.004 14.98h39.996m-23.994 20.007h8m-16-10h24M280 285.349v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25m.006 18.222L280 395.349m0-127.99v18m0-128v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25m0-111.265v1.265m0-111.265v25l15 5-30 10 30 10-30 10 30 10-30 10 15 5v25m0-110l.001-22.73" fill="none" stroke="#000"/>
+      </g>
+    </svg>
     <!-- End High Voltage Divider SVG Image -->
   </div>
   <div style="display: inline-block; font-size: 12pt;">
@@ -369,7 +365,7 @@ td.paramLabel {
 
 <div style="margin-top: 50pt; margin-left: 4pt;" id="licenseBlock">
   <div style="float: left; margin-right: 1em;">
-    <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/" style="text-decoration: none;">
+    <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/" style="text-decoration: none;" target="_blank" rel="noopener noreferrer">
       <svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="-0.5 -0.101 88 31" role="img" aria-label="CC0 Button">
         <title>CC0</title><desc>Creative Commons CC0 1.0 Universal Button Image</desc>
         <path fill="#FFF" d="M1.803.482L84.93.631c1.161 0 2.198-.173 2.198 2.333l-.103 27.556H-.295V2.862c0-1.236.118-2.38 2.098-2.38z"/><ellipse fill="#FFF" cx="13.887" cy="15.502" rx="11.101" ry="11.174"/><path d="M23.271 4.061a14.23 14.23 0 0 1 5.755 11.44 14.232 14.232 0 0 1-4.842 10.705h62.853V4.061H23.271z"/>
@@ -2700,7 +2696,7 @@ window.voltDiv.download_xlsx = (function() {
 
     app_str = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' +
-      '<Application>High Voltage Divider Calculator</Application><AppVersion>1.5</AppVersion><DocSecurity>0</DocSecurity>' +
+      '<Application>High Voltage Divider Calculator</Application><AppVersion>1.6</AppVersion><DocSecurity>0</DocSecurity>' +
       '<ScaleCrop>false</ScaleCrop><HeadingPairs><vt:vector size="2" baseType="variant">' +
       '<vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant>' +
       '</vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>results</vt:lpstr>' +

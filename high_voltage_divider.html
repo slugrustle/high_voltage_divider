@@ -442,7 +442,7 @@ td.paramLabel {
   var resSerE24E96_radio = document.getElementById('resSeriesE24E96');
 
   try {
-    settingsString = window.sessionStorage.getItem('settings');
+    settingsString = window.sessionStorage.getItem('hvdiv_settings');
   } catch(err) {
     // Ignore exceptions
   }
@@ -504,7 +504,7 @@ td.paramLabel {
     var toggleAnchor;
 
     try {
-      displayEqs = window.sessionStorage.getItem('displayEqs');
+      displayEqs = window.sessionStorage.getItem('hvdiv_displayEqs');
     } catch (err) {
       // Ignore exceptions
       displayEqs = null;
@@ -514,7 +514,7 @@ td.paramLabel {
       displayEqs = 'false';
 
       try {
-        window.sessionStorage.setItem('displayEqs', displayEqs);
+        window.sessionStorage.setItem('hvdiv_displayEqs', displayEqs);
       } catch (err) {
         // Ignore exceptions
       }
@@ -545,7 +545,7 @@ td.paramLabel {
 
       displayEqs = 'true';
       try {
-        window.sessionStorage.setItem('displayEqs', displayEqs);
+        window.sessionStorage.setItem('hvdiv_displayEqs', displayEqs);
       } catch (err) {
         // Ignore exceptions
       } 
@@ -558,7 +558,7 @@ td.paramLabel {
 
       displayEqs = 'false';
       try {
-        window.sessionStorage.setItem('displayEqs', displayEqs);
+        window.sessionStorage.setItem('hvdiv_displayEqs', displayEqs);
       } catch (err) {
         // Ignore exceptions
       }
@@ -593,8 +593,8 @@ td.paramLabel {
     // Set displayType in sessionStorage and remove previous stored
     // results.
     try {
-      window.sessionStorage.removeItem('displayType');
-      window.sessionStorage.removeItem('sortedResults');
+      window.sessionStorage.removeItem('hvdiv_displayType');
+      window.sessionStorage.removeItem('hvdiv_sortedResults');
     } catch(err) {
       // Ignore exceptions
     }
@@ -720,9 +720,9 @@ td.paramLabel {
     // Set displayType in sessionStorage and remove previously stored
     // results.
     try {
-      window.sessionStorage.removeItem('displayType');
-      window.sessionStorage.setItem('displayType', series);
-      window.sessionStorage.removeItem('sortedResults');
+      window.sessionStorage.removeItem('hvdiv_displayType');
+      window.sessionStorage.setItem('hvdiv_displayType', series);
+      window.sessionStorage.removeItem('hvdiv_sortedResults');
     } catch(err) {
       // Ignore exceptions
     }
@@ -882,8 +882,8 @@ td.paramLabel {
     // Set displayType in sessionStorage and remove previously
     // stored results.
     try {
-      window.sessionStorage.removeItem('displayType');
-      window.sessionStorage.removeItem('storedResults');
+      window.sessionStorage.removeItem('hvdiv_displayType');
+      window.sessionStorage.removeItem('hvdiv_storedResults');
     } catch(err) {
       // Ignore exceptions
     }
@@ -1064,9 +1064,9 @@ td.paramLabel {
 
     // Store results and set displayType in sessionStorage
     try {
-      window.sessionStorage.removeItem('displayType');
-      window.sessionStorage.setItem('sortedResults', JSON.stringify(window.voltDiv.sortedResults));
-      window.sessionStorage.setItem('displayType', 'results');
+      window.sessionStorage.removeItem('hvdiv_displayType');
+      window.sessionStorage.setItem('hvdiv_sortedResults', JSON.stringify(window.voltDiv.sortedResults));
+      window.sessionStorage.setItem('hvdiv_displayType', 'results');
     } catch(err) {
       // Ignore exceptions
     }
@@ -1081,7 +1081,7 @@ td.paramLabel {
 
   // Display nothing, resistor values, or previous results based on sessionStorage
   try {
-    displayType = window.sessionStorage.getItem('displayType');
+    displayType = window.sessionStorage.getItem('hvdiv_displayType');
   } catch(err) {
     // Ignore exceptions
   }
@@ -1092,14 +1092,14 @@ td.paramLabel {
     window.voltDiv.displayResistorValues('E96');
   } else if (displayType === 'results') {
     try {
-      sortedString = window.sessionStorage.getItem('sortedResults');
+      sortedString = window.sessionStorage.getItem('hvdiv_sortedResults');
     } catch(err) {
       // Ignore exceptions
     }
 
     if (sortedString !== null) {
       try {
-        settingsString = window.sessionStorage.getItem('settings');
+        settingsString = window.sessionStorage.getItem('hvdiv_settings');
       } catch(err) {
         // Ignore exceptions
       }
@@ -2894,7 +2894,7 @@ td.paramLabel {
   function storeSettings() {
     // Store settings in sessionStorage
     try {
-      window.sessionStorage.setItem('settings', JSON.stringify(window.voltDiv.settings));
+      window.sessionStorage.setItem('hvdiv_settings', JSON.stringify(window.voltDiv.settings));
     } catch(err) {
       // Ignore exceptions
     }
